@@ -1,0 +1,81 @@
+\section{Appendix}
+\label{sec:Appendix}
+
+
+% ### APPENDIX PART A ###
+
+
+
+
+\begin{sidewaystable}
+%\begin{table*}[h!]
+  \centering
+  \begin{tabular}{cccccccc}
+    Reference & Scenario & FL Solution & Participants & Computing Plan & Algorithm & Task \\
+    \hline \\[-1.5ex]
+    \cite{Xu2020ADiagnosis}                             & real-world & custom solution          & 4             & FedAvg                    & 3D-Densenet       & Classification \\
+    \cite{Balachandar2020AccountingImaging}             & simulated  & -                        & 4             & Sequential                & GoogleLeNet       & Classification \\
+    \cite{Wang2020AutomatedLearning}                    & real-world & NVIDIA Clara Federated   & 2             & FedAvg                    & C2FNAS            & Segmentation \\
+    \cite{Remedios2020DistributedSegmentation}          & real-world & custom solution          & 2             & Sequential                & U-Net             & Segmentation  \\
+    \cite{Remedios2019DistributedInjury}                & real-world & custom solution          & 2             & Sequential                & CNN (Incept.)     & Segmentation  \\
+    \cite{Chang2018DistributedImaging}                  & simulated  & -                        & 4             & Sequential \& Ensembling  & ResNet34          & Classification \\
+    \cite{Kaissis2021End-to-endImaging}                 & synthetic  & PriMIA (based on PySyft) & 3             & FedAvg                    & ResNet18          & Classification  \\
+    \cite{Dou2021FederatedStudy}                        & synthetic  & custom solution          & 3             & FedAvg                    & CNN               & Segmentation \\
+    \cite{Roth2020FederatedImplementation}              & real-world & NVIDIA Clara Federated   & 7             & FedAvg                    & DenseNet-121      & Classification \\
+    \cite{Feki2021FederatedImages}                      & simulated  & -                        & 4             & FedAvg                    & VGG16 \& ResNet50 & Classification \\    
+    \cite{Sarma2021FederatedSharing}                    & real-world & NVIDIA Clara Federated   & 3             & FedAvg                    & 3D AH Net         & Segmentation \\
+    \cite{Sheller2020FederatedData}                     & simulated  & -                        & 10            & FedAvg \& Sequential      & U-Net             & Segmentation \\
+    \cite{Baheti2020FederatedNodules}                   & simulated  & -                        & 3             & FedAvg                    & V-Net             & Classification \\    
+    \cite{Yang2021FederatedJapan}                       & synthetic  & NVIDIA Clara Federated   & 3             & FedAvg                    & 3D U-Net          & Segmentation \\  
+    \cite{Sheller2019Multi-institutionalSegmentation}   & simulated  & -                        & 4, 6, 8, 32   & FedAvg                    & U-Net             & Segmentation \\
+    \cite{Li2019Privacy-preservingSegmentation}         & synthetic  & NVIDIA Clara Federated   & 13            & FedAvg                    & CNN               & Segmentation \\
+    \cite{Andreux2020SiloedDatasets}                    & simulated  & -                        & 2, 5          & FedAvg                    & CNN               & Segmentation \\
+    \cite{Yan2020Variation-AwareData}                   & simulated  & -                        & 2, 4, 8       & FedAvg                    & CNN               & Classification \\
+    \cite{Lee2021FederatedEnvironment}                  & real-world & PySyft                   & 6             & FedAvg                    & multiple          & Classification \\
+    \cite{Flores2021FederatedPatients}\rlap{*}          & real-world & NVIDIA Clara Federated   & 20            & FedAvg                    & ResNet34          & Classification \\
+  \end{tabular}
+  \caption{Complete list of articles applying FL using medical images in a real-world, synthetic, or simulated scenario (*Preprint)}
+  \label{tab:LitSearchFull}
+%\end{table*}
+\end{sidewaystable}
+
+
+
+\newpage
+% ### APPENDIX PART B ###
+\subsection{Detailed parameters and training information for the conducted experiments}
+\label{apdx:B}
+
+\Cref{tab:TrainingParams} provides an overview of the used training parameters for the three conducted experiments.
+Further, the model architectures used for the experiments as well as the applied image transformations are explained in the following.
+
+% transposed table
+
+
+% ### MNIST - Experiment Details ###
+The MNIST experiment was derived from PyTorch example\footnote{https://github.com/pytorch/examples/blob/master/mnist/main.py; commit hash: 0f0c9131ca5c79d1332dce1f4c06fe942fbdc665}. The model architecture consist of two convolutional layers followed by max pooling and a dropout layer. The two subsequent fully connected layers are separated by a second dropout layer.
+Except for normalization, no transformations were applied to the images.
+
+
+% ### Pneumonia - Experiment Details ###
+As in the article of \cite{Kaissis2021End-to-endImaging}, ResNet18 \cite{He2016DeepRecognition} was chosen as model architecture for the experiment on the pneumonia data. Please note that due to the mentioned limitations of PySyft, Stochastic Gradient Descent (SGD) and not Adam was used as optimizer.
+The following transformations were applied to the images.
+Image resizing to $256 \times 256$,
+random horizontal flipping,
+random vertical flipping,
+and image normalization.
+
+
+% ### BraTS - Experiment Details ###
+The configuration for the segmentation experiment using the brain MRI scans is based on the corresponding MONAI tutorial\footnote{\url{https://github.com/Project-MONAI/tutorials/blob/master/3d\_segmentation/brats\_segmentation\_3d.ipynb}; commit hash: d340613cea8b0f10b780694c636c1d7ff8f7658d}.
+The U-Net architecture was set up with a channel sequence of ($16, 32, 64, 128, 256$) and convolution strides of size two. The number of residual units was set to two.
+% channels=(16, 32, 64, 128, 256),
+% strides=(2, 2, 2, 2),
+% num_res_units=2,
+The following transformation were applied on the brain scans.
+Random vertical flipping,
+random spacial cropping ($\textrm{with roi\_size} =  128 \times 128 \times 64$),
+intensity normalization,
+random intensity shifting,
+random intensity scaling.
+Note that apart from the parameters listed in \Cref{tab:TrainingParams}, the Adam optimizer \cite{Kingma2014Adam:Optimization} was used with its PyTorch default values.

@@ -1,0 +1,110 @@
+\section{Discussion}
+\label{sec:Discussion}
+
+\subsection{Requirements \& FL Solution Comparison}
+\label{subsec:DiscussionRequirements}
+
+When examining the previously presented comparison (see \Cref{subsec:ResultsRequirements}) of the various FL Solutions, the following can be noted.
+% GPU 
+Apart from PySyft all FL solutions support GPU. This also applies to the current version of the PriMIA extension, which has been adapted for the field of medical image data.
+% PACS & DICOM
+Both, NVIDIA Clara Federated and JIP Federated provide an adapter for the clinical PACS, which is particularly advantageous in the field of medical image processing, while all others do not. The same applies to the support of the DICOM format, which is equally essential.
+Note that PriMIA extends PySyft in such a way that it supports DICOM while PySyft itself does not.
+% Information
+Except for PySyft and PaddleFL all solutions come with extensive information. While PySyft does not yet provide a complete and detailed documentation, the resources regarding PaddleFL are not fully provided in English language. In addition, the community of PaddleFL communicates mainly in Chinese.
+
+% privacy things - Lack of privacy mechanism on JIP federated
+When comparing the privacy mechanisms, a weakness of JIP Federated becomes apparent. All other solutions support at least one of the considered mechanisms, whereas JIP Federated has not implemented any mechanism yet.
+Note that TFF does not natively come with Differential Privacy. However, it can be seamlessly added by using \textit{TensorFlow Privacy}\footnote{\url{https://github.com/tensorflow/privacy}}, which is completely interoperable with TFF.
+While the implementation of such mechanisms is beyond the scope of this work, it is foreseeable that this will be one of the next steps in further development. % hier angebracht?
+Until then, this is an obvious disadvantage of JIP Federated.
+
+% Platform solutions
+NVIDIA Clara Federated and JIP Federated are both extensive platform solutions with features for the healthcare environment, and in particular for working with medical images.
+% Distinction between NVIDIA Clara and JIP Federated
+The differences between the two solutions are the following. While the codebase of NIVDIA Clara Federated is not publicly available, JIP Federated is fully open-source. This allows developers to extend the solution according to their needs, to understand the functionalities, and therefore trust the solution.
+From our perspective, all this can be seen as advantageous.
+Further, NVIDIA provides the privacy mechanisms DP and HE, which is a major advantage compared to JIP Federated, which does not support such mechanisms yet.
+
+% Limitation
+Please note that this categorization was done to the best of our knowledge and based on the available information. As mentioned before, it was not always easy to identify the relevant details in the given information.
+
+
+
+
+
+\subsection{PySyft Integration \& JIP Federated Implementation}
+\label{subsec:DiscussionImplementation}
+% ### PySyft Integration ###
+% (Docker) container integration
+As the PySyft components are available as containers, the integration into the JIP is seamlessly possible. This also applies to the integration as container-based operators into a DAG.
+Additionally, the usage of the PySyft-Notebook is not mandatory. The software library can also be installed independently of the provided container and used within a python script, for example.
+
+% flexibilität der JIP durch PySyft Integration gezeigt
+% Old: PySyft and therefore its integration into the JIP comes with the drawback of long computing times as shown in the experiments. However, the 
+The integration of PySyft clearly shows the advantages of the JIP. 
+It highlights the flexibility and expandability of the platform, not only for PySyft but also for other potential solutions and frameworks. We showed that due to the open codebase, it is possible to combine other FL solutions with the JIP. In particular, solutions that are provided as containers can be deployed seamlessly in the JIP's Kubernetes cluster.
+
+% ### JIP Federated ####
+For JIP Federated, the key component to orchestrate the workflows within and across the central instance and the participants is Apache Airflow.
+% re-using operators
+Because Airflow operators are the essential components for the workflow logic, they should be as generic and reusable as possible to minimize the development effort for a new experiment. We have managed to implement all operators, except the actual experiment operators, in such a way that they are completely transferable as they are. Therefore, a data scientist who wants to conduct his experiment in the JIP only needs to transfer his code into the two containers for model aggregation and model training on the participants. We see this as advantageous in terms of development effort.
+
+% Drawback of number of operator being used 
+A drawback of the JIP federated implementation is the large number of operators needed for the individual tasks.
+Especially, the scheduling DAG on the central instance requires numerous operators. This is necessary to implement the different steps of the workflow logic but brings an unfortunate side effect: Due to the dependencies between the individual tasks, the operators can only work in parallel to a minor extent.
+% reasoning
+Since each operator needs time to be started up and shut down again, even tasks that are actually fast require more time.
+% idle time disadvantage relative
+This idle time accumulates and adds up to the actual processing time. This disadvantage is reduced in its impact for experiments in which the actual training on the participants takes a larger share of the overall workflow time than the process on the central instance.
+This is particularly evident in the results of the runtime experiments listed in \Cref{tab:RuntimeExp}.
+The implementations' runtime for model training does differ only by a few minutes when using MNIST data. In contrast, PySyft requires more than twice as long as JIP Federated for the more complex task on the pneumonia data.
+
+% Different data handling % Transformations
+Further, there is a difference between the PySyft Integration and JIP Federated in terms of data handling and pre-processing.
+With PySyft the random transformations are applied to the images only once. The data-providing operator then serves the pre-processed images in this form for the whole training via the PySyft node on the CPU. In contrast, JIP Federated applies new random transformations in each federated round. This results in a higher variability within the images used for training,
+which then becomes apparent during model training and final testing.
+
+
+
+
+
+
+\subsection{Experiments}
+\label{subsec:DiscussionExperiments}
+
+% ### Runtime Comparison ###
+For the runtime experiments on the MNIST and pneumonia datasets,
+% similarity of behavior
+the shape of the training curves and the performance of the resulting models are comparable. The models trained with JIP Federated perform only slighly better according to accuracy and ROC-AUC. Thus, the implementations lead to similar training behavior, and the runtime can be compared with each other.
+% different learning curve
+The reason for the slightly different training curves on the pneumonia images can be found in the differences in the implementations mentioned before.
+Applying the image transformations only once leads to a smaller variance in the training data of the PySyft experiment and, therefore, to a lower training loss. However, the resulting model generalizes slightly poorer, which explains the weaker test performance of the model trained with PySyft.
+% spikes
+The noticeable peaks during training on the pneumonia data might be due to outliers or poor data labelling.
+
+% Runtime
+Although the runtime experiments themselves are relatively basic, both solutions require a rather long time.
+However, the difference of more than seven hours when training on the pneumonia dataset demonstrates the shortcomings regarding the computing efficiency of PySyft. The comparatively long training time has already been noted by the developers and explained by the implemented privacy mechanisms \citep{Ryffel2018ALearning}.
+JIP Federated also requires rather a long time for the experiments, which can be explained by the already mentioned large number of required Airflow operators.
+
+
+% ### BraTS Segmentation Experiment ###
+Examining the training behavior of the federated segmentation experiment,
+% Shape of participants
+we find that the curves are very similar for all three participants. The apparent reason for this is that the BraTS data was distributed randomly and not according to its origin or some criteria that influence the imaging, such as the used hardware.
+% Peaks
+Further, they have notable buckles at two points. The first occurs after about ten federated rounds and the second after 300.
+The second buckle can be explained by the learning behavior on the ET tumor region, which in general performs worse and experiences a quick increase at this stage.
+
+% comparing
+When comparing the federated experiment with the centralized setting, some differences can be observed as well.
+% buckles
+First, the buckles seen during the federated training do not occur in the traditional setting of training on centralized data. We suspect that this could be due to the chosen \textit{optimizer state treatment}, but have not conducted experiments with other treatment option.
+% slower convergence
+Further, the model converges more slowly in a federated setting. One reason for this is probably the aggregation of the models: a simple average of model parameters cannot adequately combine the knowledge learned at the different sites. This is the usual trade-off FL faces: the convergence could be accelerated by performing fewer local training steps (moving closer to mini-batch gradient descent), but that would increase the communication frequency. % comment Max
+% final performance
+Although the convergence is slower, the model trained with FL achieves a mean dice score of 0.745 after 500 epochs. This is equivalent to 98.58 \% of the performance by the model trained on centralized data (mean dice score of 0.7554). Note also that we did not perform any hyperparameter tuning for FL and just adopted the parameters that were provided in the MONAI tutorial\footnote{\url{https://github.com/Project-MONAI/tutorials/blob/master/3d\_segmentation/brats\_segmentation\_3d.ipynb}}, which was developed on centralized data.
+% centralized (last testing (val)):    0.7554029747843742
+% federated (last testing (val) avg):  0.7446803177396456
+% compared:                         98.58053814948381

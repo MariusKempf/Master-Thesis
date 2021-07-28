@@ -1,0 +1,35 @@
+\section{Conclusion}
+\label{sec:Conclusion}
+
+% intro
+In order to use deep learning models in clinics, they must be robust and generalize sufficiently. One way to achieve this is to train these models on very large datasets. However, annotated image data in the healthcare domain is rare and expensive---and is subject to privacy aspects.
+Federated learning is a promising approach to address these challenges.
+But first, technical solutions are needed to enable the application of federated learning in the healthcare environment.
+
+% We compared exisiting federated learning solutions with regrad to what is needed bring federated learnign into medical institutions. Thus, we provide an overview of solutions in the 
+% there is not yet one solution that meets all requirements, but promising solutions are emerging.
+
+% Solution comparison
+We showed which federated learning solutions exist and what is needed to bring federated learning into medical institutions. There is not yet one solution that meets all requirements, but many promising projects could be identified.
+% on federated learning and also its application within the healthcare environment.
+The platform solutions NVIDIA Clara Federated and JIP Federated, the latter of which is presented within this article, provide features that are advantageous for the application in the healthcare environment, in particular for the usage of medical images.
+
+We demonstrated that the Joint Imaging Platform is a promising solution, either in combination with an existing federated learning framework or as a stand-alone solution itself.
+% Integration
+With the seamless integration of PySyft, the high flexibility of the platform was demonstrated, so the possibility to combine other solutions with the Joint Imaging Platform's infrastructure and the resulting benefits are given.
+% JIP Federated
+Further, we designed a JIP-only federated learning solution---JIP Federated.
+By using JIP Federated for the segmentation of gliomas in brain MRI scans, we demonstrated that it is a capable federated learning solution for complex medical task. Its implementation is highly flexible, easy to apply on other federated learning experiments, and brings further advantages through its platform features.
+Thus, we provide a comprehensive open-source solution to conduct real-world FL in the domain of medical image computing.
+
+% ### Outlook ###
+% Advantage: Established & Trusted
+The Joint Imaging Platform is an established and trusted tool in the healthcare community and is already being used in a multitude of German clinics and beyond.
+As proved by the experiments, JIP Federated can be a solution to make federated learning real-world.
+% real-world experiment with lots of data from 
+Future work should focus on using JIP Federated for experiments across  geographically distributed clinics on large datasets that cannot be shared directly.
+% Adding additional privacy mechanisms and layer between the communication of JIP instances
+A further aspect needs to be the extension of the Joint Imaging Platform to provide privacy mechanisms such as Differential Privacy, Homomorphic Encryption, and Secure Multi-Party Computing as additional security layers for the communication between instances.
+% Motivation zur Anwendung in der Praxis tatsächlich ohen den Zugang zu den ganzen Daten.
+With this work on federated learning with the Joint Imaging Platform, we also hope to give an incentive for further federated experiments using JIP Federated.
+% We want to encourage the further development and long-term use of JIP Federated in practice and for large-scale studies.
