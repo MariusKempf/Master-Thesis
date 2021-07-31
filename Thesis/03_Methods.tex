@@ -11,7 +11,7 @@ Implementations of FL solutions in a real-world medical environment need to fulf
 In addition, we add further requirements assessed from the experience of three domain experts in the field of FL and DL on medical image data. These requirements are considered by the experts to be relevant for the successful implementation of FL in a medical environment.
 
 % Comparison
-Based on the identified requirements, we compare multiple FL solutions, including our own proposed solution based on the JIP. Besides NVIDIA Clara Federated and PySyft, which have already been used in scientific publications (\Cref{sec:LitRev}), we also include the other FL solutions introduced in the related work. These solutions were already examined in earlier scientific publications of \cite{Li2019AProtection} and \cite{He2020FedML:Learning}, have a significant number of GitHub stars, and have an active repository with current contributions. Custom implementations are not considered further for comparison due to their lack of scalability. In order to gather the relevant information, we have intensively studied the provided documentation as well as tutorials and examples, if provided.
+Based on the identified requirements, we compare multiple FL solutions, including our own proposed solution based on the JIP. Besides NVIDIA Clara Federated and PySyft, which have already been used in scientific publications (\Cref{subsec:LitRev}), we also include the other FL solutions introduced in the related work. These solutions were already examined in earlier scientific publications of \cite{Li2019AProtection} and \cite{He2020FedML:Learning}, have a significant number of GitHub stars, and have an active repository with current contributions. Custom implementations are not considered further for comparison due to their lack of scalability. In order to gather the relevant information, we have intensively studied the provided documentation as well as tutorials and examples, if provided.
 
 
 
@@ -40,17 +40,6 @@ For the experiments in this work, the \textit{PySyft-Node} was integrated into a
 \textit{PySyft-Grid} and \textit{PySyft-Notebook} are hosted on the central instance.
 From the notebook, it is then possible to search for the relevant data within \textit{PySyft-Grid} using the assigned identification tags. The received references to the data on the participating clinics can then be used as usual in PySyft to implement the training logic.
 
-%\begin{figure}[h!]
-\begin{figure}[htbp!]
-%\begin{adjustbox}{width=1\textwidth}
-    %\centerline{\includegraphics[width=1.95 \columnwidth]{1_Figures/dags.pdf}}
-    \centerline{\includegraphics[width=1\textwidth]{1_Figures/dags.pdf}}
-    \caption{Apache Airflow DAGs for JIP Federated (A \& B) and the JIP's PySyft integration (C). (A) DAG on central instance, which schedules the federated experiment and its individual process steps. (B) DAG on a participating institutions, which loads the local data and the consensus model from the central instance to execute the model training. When training is completed, the updated model is saved back to the central instance.  (C) DAG on a participating instance loading and providing its locally available data to the PySyft-Node, which then executes the computations during training. Note that the central instance of the PySyft integration hosts its PySyft-Notebook without being integrated into a DAG.}
-%\end{adjustbox}
-\label{fig:Dags}
-\end{figure}
-
-
 
 \subsection{JIP Federated}
 \label{subsec:MethodsJIPFederated}
@@ -62,6 +51,13 @@ The workflow on the central instance is illustrated in \Cref{fig:Dags} A, the tr
 
 % Our JIP Federated implementation is 
 We implemented JIP Federated in such way that it is primarily based on the two JIP components Apache Airflow and the object store MinIO as well as their corresponding APIs. Also here, some ports and URLs were whitelisted to enable a communication between the nodes. Different from the PySyft integration, the federated training is scheduled by an Airflow DAG on the central instance instead of a Jupyter-Notebook. An API call to Airflow is used to start the scheduler DAG and thus the federated experiment. With the API call, relevant parameters such as the number of federated rounds, corresponding epochs per round, and learning rate are provided.
+
+%\begin{figure}[h!]
+\begin{figure}[htbp]
+    \centerline{\includegraphics[width=1\textwidth]{1_Figures/dags.pdf}}
+    \caption[Airflow DAGs for JIP Federated and the JIP's PySyft integration]{Apache Airflow DAGs for JIP Federated (A \& B) and the JIP's PySyft integration (C). (A) DAG on central instance, which schedules the federated experiment and its individual process steps. (B) DAG on a participating institutions, which loads the local data and the consensus model from the central instance to execute the model training. When training is completed, the updated model is saved back to the central instance.  (C) DAG on a participating instance loading and providing its locally available data to the PySyft-Node, which then executes the computations during training. Note that the central instance of the PySyft integration hosts its PySyft-Notebook without being integrated into a DAG.}
+\label{fig:Dags}
+\end{figure}
 
 % ### scheduler dag ####
 The workflow on the central instance controls the processes of the experiment and can be described as follows (see \Cref{fig:Dags} A).
@@ -85,68 +81,145 @@ Due to the modularity of the DAGs, the individual operators can be reused for ot
 
 
 \subsection{Development}
-\label{subsec:Development}
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
+\label{subsec:Development} 
+
+% Intro & General
+In the following, the implementations of the JIP's PySyft integration and JIP Federated are described in detail.
+The implementations are publicly available on GitHub embedded in the Kaapana project---the JIP's PySyft integration can be found on the branch \textit{feature/openmined}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined}\\ commit hash: aab58dac046f22d1b67ee2b49d9f4c72f7b0b69d}, JIP Federated on the branch \textit{feature/federated-training}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training}\\ commit hash: 1da26c0dfbe53d3a092762bd8e8a9e2e564148ef}.
+
+% Minio Operator 
+A central operator is the \textit{LocalMinioOperator}\footnote{\url{https://github.com/kaapana/kaapana/blob/develop/workflows/airflow-components/plugins/kaapana/operators/LocalMinioOperator.py}}. It serves as an interface between the Airflow environment and the object-store MinIO. The operator can be used for operations (\verb|get|, \verb|remove|, \verb|put|)  on the buckets and available files. Across both implementations and all experiments, it is used, for instance, to load data into the Airflow environment or to load and store models.
+
+% ### PySyft ###
+\subsubsection{PySyft Integration into the JIP}
+
+% central instance
+The three containerized PySyft components (PySyft-Notebook, PySyft-Grid, PySyft-Notebook) are embedded into the JIP via Helm charts\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/services/applications/openmined}}. This allows to install them via the JIP's GUI as a JIP extension. \textit{PySyft-Grid} and \textit{PySyft-Notebook} are installed as such extensions on the central instance.
+% participants
+On the participants, the \textit{PySyft-Node} is integrated into a DAG\footnote{\url{https://github.com/kaapana/kaapana/blob/feature/openmined/workflows/airflow-components/dags/dag_openmined_provide_data.py}} which is depicted in \Cref{fig:DAG_PySyft}. In addition to an operator to load the data into the Airflow environment, the following three operators are implemented for this DAG.
+
+% run-node-operator
+The \textit{RunNodeOperator} is implemented as \textit{Application-Operator}. These operators can launch applications via the Helm API, similar to manually installing an extension. By running this operator, the \textit{PySyft-Node} is started as a temporary application in the JIP. This is done in parallel with the operator described next.
+
+% provide-data-operator
+The \textit{ProvideDataOperator} starts a Docker container\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/processing-container/openmined/provide-data}}, which mounts the directory containing the previously loaded data. When the container is launched, it executes its process script. Meaning that data is loaded, transformed, tagged, and then sent to the \textit{PySyft-Node}. A parameter can be set for how long the data should be provided into the node.
+
+% shutdown
+When the previous operator is completed, the subsequent \textit{ShutdownNodeOperator} is launched to call the Helm API to uninstall \textit{PySyft-Node} chart.
+From this point on, the node is unsubscribed from the \textit{PySyft-Grid} and its data is not hosted any further. As a last step, the used Airflow directories are emptied.
+
+\begin{figure}[htbp!]
+    \centerline{\includegraphics[width=1\textwidth]{1_Figures/DAG_PySyft.pdf}}
+    \caption[DAG of the JIP's PySyft integration for providing locally available data of participating institutes]{DAG of the JIP's PySyft integration for providing locally available data of participating institutes}
+\label{fig:DAG_PySyft}
+\end{figure}
+
+% Operators 
+The operators used for the JIP's PySyft integration are can be found in the repository\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/airflow-components/dags/openmined}}.
+Exemplary experiment-notebooks are made available together with the Docker image of the \textit{PySyft-Notebook} component\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/processing-container/openmined/provide-data}}.
+
+
+
+% ### JIP Federated ###
+\subsubsection{JIP Federated}
+
+As described in \Cref{subsec:MethodsJIPFederated}, each experiment using JIP Federated is based on two Dags\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/airflow-components/dags}}---one implemented on the central instance and the second on the participating institutions. \Cref{fig:DAG_KaapanaFed} provides a detailed illustration of the two DAGs.
+In the following, the implemented operators are described in detail---the source-code is publicly available\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/airflow-components/dags/federated_training}}.
+The same applies to the corresponding processing containers\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/processing-container/federated-training}}.
+Note that depending on whether \textit{aggregation} or \textit{sequential training} was chosen as computing plan, the behavior of the operators slightly differ.
+
+\textit{EntrypointOperator} is the first operator being executed when the DAG starts. Given the parameter provided by the API call of the data scientist or the previous DAG-run, it determines the next step. 
+For the first federated round, the first model is initialized. In case the training is completed, the next step is to save the final model and finalize the workflow.
+Otherwise, the training continues and the model from the previous round is saved to MinIO.
+The routing is realized by the \textit{KaapanaBranchPythonBaseOperator} which branches the workflow depending on the information given the information received from the \textit{EntrypointOperator}.
+
+\textit{ExperimentOperator} is used at two points in the DAG. First, it initializes the model in the first round. Further, it is used for aggregation of models received from the participants. When a \textit{sequential} computing plan is applied, the model is simply loaded and directly saved again to the target directory.
+To decide between the tasks to be executed, corresponding parameters are passed when starting the operator.
+While all other operators are generic, this operator is experiment-specific. The specific operators for each of the conducted experiments are also available in the repository and can be identified by their name (i.e. \verb|ExperimentsBraTSOperator.py|).
+
+\textit{TriggerRemoteWorkersOperator} triggers the DAGs on the participating institutes. For each participant, an API call is executed which contains the required information and parameters, such as current federated round, number of epochs to train locally, and learning rate to use. In addition, information about the central instance is provided so that an allocation can be done. Note that no model is sent by the central instance.
+In parallel, a \textit{LocalMinioOperator} empties the model cache in MinIO, because the new models of the participants are expected there.
+
+\textit{AwaitingModelsOperator} is used to keep the workflow waiting for the models to be sent back. It uses the API of MinIO to check every three seconds whether the models of the participants have already arrived in the model cache (which has been emptied before to guarantee that no models from earlier rounds are used). As soon as all newly updated models are available, the loop ends and the operator completed its task.
+
+\textit{TriggerMyselfOperator} is the final operator of the DAG.
+It serves for launching the next Dag-Run. For this, it transfers the required data, such as the current model checkpoint, into a newly created folder for the following DAG run. The operator
+
+\begin{sidewaysfigure}[htbp]
+    \centerline{\includegraphics[width=1\textwidth]{1_Figures/DAG_KaapanaFed.pdf}}
+    \caption[DAGs of JIP Federated on the central instance and the participants]{DAGs for JIP federated. (A) DAG on the central instance, scheduling the overall workflow. (B) Training DAG implemented on the participating instances.}
+\label{fig:DAG_KaapanaFed}
+\end{sidewaysfigure}
+
+also applies a new API call based on the previous call and therefore triggers the next round. In case of a \textit{sequential} computing plan, this operator determines which participant is next to receive the model for training. In addition, the operator manages the incrementing of the performed federated rounds depending on the applied computing plan.
+
+For the model training on the participating institutes, the following operators are used for the corresponding DAG.
+When the DAG is externally triggered by the central instance' \textit{TriggerRemoteWorkersOperator}, two \textit{LocalMinioOperator} are started to load the locally available data and the model into the Airflow environment. Note that the model is loaded directly from the object store of the central instance---this actually implies that the model is not sent to but pulled by the participants.
+% Training Operator
+
+\textit{TrainingOperator} launches a Docker container which accesses the loaded data and model.  The container executes a processing script which is similar to a regular PyTorch experiment. Data transformations are applied, and the model is trained for the given number of epochs.
+As before, these experiment-specific operators can be identified by their name (i.e. \verb|TrainingBraTSOperator.py|).
+
+% save back to central instance
+When the training is completed, another \textit{LocalMinioOperator} is used to store the updated model again directly into the object store of the central instance.
+This completes the DAG on the participant. Depending on the configuration, checkpoints of the model can also be saved locally on the participant.
 
 
 \subsection{Experiments, Algorithms \& Datasets}
 \label{subsec:MethodsExperiments}
 
-Two classification experiments were carried out to compare the JIP's PySyft integration and JIP Federated. These experiments aim to compare the runtime and thus the efficiency of the two solutions while achieving similar learning behavior and performance. Furthermore, a segmentation experiment on complex multi-modal medical images was conducted. 
-We demonstrate that it is feasible to perform FL with the JIP on a standard benchmark dataset of medical images.
+Two classification experiments were carried out to compare the JIP's PySyft integration and JIP Federated. These experiments aim to compare the runtime and thus the efficiency of the two solutions while achieving similar learning behavior and performance. Additionally, a segmentation experiment on complex multi-modal medical images was conducted to demonstrate the capabilities JIP Federated. 
+We demonstrate that it is feasible to perform FL with the JIP on a standard benchmark dataset of medical brain tumor scans.
 % General setting with three participants (in all experiments)
-For all experiments, we assume that three participating institutes provide their local data. Further, in every federated round one epoch is trained on the available data.
+For all experiments, we assume that three participating institutes provide their local data. Furthermore, in every federated round one epoch is trained on the available data.
 
 % ### Runtime Experiments ###
-The runtime experiments were conducted on two different publicly available datasets: the widely known Modified National Institute of Standards and Technology\footnote{\url{http://yann.lecun.com/exdb/mnist/}} (MNIST) dataset, consisting of 70,000 digit handwriting images (60,000 for training and 10,000 for testing), and the paediatric pneumonia dataset\footnote{\url{https://data.mendeley.com/datasets/rscbjbr9sj/3}} originally proposed by \cite{Kermany2018IdentifyingLearning}. It contains paediatric chest radiographs split into 5,232 samples for training and 624 for testing. The data is classified as either normal (with no signs of infection, 1,349 samples) or infected (bacterial or viral pneumonia, 3.883 samples). The test data contains 234 normal samples and 390 samples classified as infected. In order to use the datasets in a federated setting, non-overlapping subsets were formed. Each class in the training data was randomly divided into three parts and distributed among the participants. The test data was held out for final global testing after training. This process was applied on both datasets.
+The runtime experiments were conducted on two different publicly available datasets: the widely known Modified National Institute of Standards and Technology\footnote{\url{http://yann.lecun.com/exdb/mnist/}} (MNIST) \citep{LeCunYannandCortesCorinnaandBurges2010} dataset, consisting of 70,000 digit handwriting images (60,000 for training and 10,000 for testing), and the paediatric pneumonia dataset\footnote{\url{https://data.mendeley.com/datasets/rscbjbr9sj/3}} originally proposed by \cite{Kermany2018IdentifyingLearning}. It contains paediatric chest radiographs split into 5,232 samples for training and 624 for testing. The data is classified as either normal (with no signs of infection, 1,349 samples) or infected (bacterial or viral pneumonia, 3.883 samples). The test data contains 234 normal samples and 390 samples classified as infected. In order to use the datasets in a federated setting, non-overlapping subsets were formed. Each class in the training data was randomly divided into three parts and distributed among the participants. The test data was held out for final global testing after training. This process was applied on both datasets.
 % dataset class distribution 
 % total:    5,232 (3,883 pneumonia, 1,349 normal)
 % training: ...
 % testing:  624 (390 pneumonia, 234 normal)
 
 % Applied transformations
-For the training, image transformations were applied to both datasets. While the MNIST images were only normalised, the following transformations were performed on the pneumonia images.
+Before the samples of the two datasets were used for training, image transformations were applied. While the MNIST images were only normalized, the following transformations were performed on the pneumonia images.
 Image resizing to $256 \times 256$ pixels,
 random horizontal flipping,
 random vertical flipping,
 and image normalization.
 
-For the MNIST experiments, the algorithm and training parameters were adopted from the basic MNIST example of PyTorch\footnote{\url{https://github.com/pytorch/examples/blob/master/mnist/main.py}; commit hash: 0f0c9131ca5c79d1332dce1f4c06fe942fbdc665}. Training was performed for 14 federated rounds using a batch size of 64 and a learning rate of $10^{-2}$. For the experiment on pneumonia radiographs, the ResNet18 (see \cite{He2016DeepRecognition}) architecture pre-trained on ImageNet was used, following \cite{Kaissis2021End-to-endImaging}. The model was trained for 40 federated rounds with a learning rate of $10^{-4}$ and a batch size of 8 (also used by the baseline for the processing time experiments in \cite{Kaissis2021End-to-endImaging}). Due to PySyft's limitation of not supporting momentum terms in the integrated release version, Stochastic Gradient Descent (SGD) was used as optimizer.
+For the MNIST experiments, the algorithm and training parameters were adopted from the basic MNIST example of PyTorch\footnote{\url{https://github.com/pytorch/examples/blob/master/mnist/main.py};\\commit hash: 0f0c9131ca5c79d1332dce1f4c06fe942fbdc665}. Training was performed for 14 federated rounds using a batch size of 64 and a learning rate of $10^{-2}$. For the experiment on pneumonia radiographs, the ResNet18 (see \cite{He2016DeepRecognition}) architecture pre-trained on ImageNet was used, following \cite{Kaissis2021End-to-endImaging}. The model was trained for 40 federated rounds with a learning rate of $10^{-4}$ and a batch size of 8 (also used by the baseline for the processing time experiments in \cite{Kaissis2021End-to-endImaging}). Due to PySyft's limitation of not supporting momentum terms in the integrated release version, Stochastic Gradient Descent (SGD) was used as optimizer.
 % Kaissis Baseline: "All times shown in white are relative to the baseline for a batch size of 8" - Haben sie als Baseline genutzt um den Zeitaufwand zu vergleichen
 
-% For the classification experiments, two performance metrics are used. 
-% TODO: Metric: Accuracy & AUR-ROC aufnehmen für die 
-
 % ACCURACY
-To measure the trained models performance on the test data, the metric \textit{Accuracy} was used. Its value represents the proportion of the correctly classified samples over all samples. The metric is defined as:
+To measure the performance of the trained models on the test data, the metric \textit{Accuracy} was used. Its value represents the proportion of the correctly classified samples over all samples. The metric is defined as:
 \begin{equation}
 Accuracy=\frac{TP + TN}{TP + TN + FP + FN} \label{eq:accuracy}
 \end{equation}
 where TP = True Positive, FP = False Positive, TN = True Negative, FN = False Negative.
 % AU-ROC
-In addition, the receiver-operator-characteristic-area-under-the-curve (ROC-AUC) is measurend for the experiments on the slightly imbalanced pneunomia dataset.
+In addition, the area-under-the-receiver-operator-characteristic (AUROC) is measured for the experiments on the slightly imbalanced pneunomia dataset.
 The metric is a performance metric based on the receiver-operator-characteristic (ROC) curve, which represents possible combinations of true-positive-rate (TPR) and the false-postive-rate (FPR).
-By mapping the FPR on the x-axis and the TPR on the y-axis, a curve is formed. The area underneath this curve is the ROC-AUC and its value ranges between 0 and 1 (higher is better). 
-
+By mapping the FPR on the x-axis and the TPR on the y-axis, a curve is formed. The area underneath this curve is the AUROC and its value ranges between 0 and 1 (higher is better). 
 
 % Furthermore, the integrated PySyft version does not support graphical processing unit (GPU), thus, the experiments were carried on central processing unit (CPU) resources only.
 Furthermore, all JIP instances for the experiments were set up identically, and training was carried out on the central processing unit (CPU). Computing resources of 10,000 Mi\footnote{\unexpanded{$1\ Mi\ (mebibyte) = 1024 \times 1024\ bytes$}} were allocated to each node, respectively training container, by the underlying Kubernetes.
 
+
 % ### BraTS ###
 
-In the federated segmentation experiment with JIP Federated, a U-Net (see \cite{Ronneberger2015U-net:Segmentation}) was trained to segment diagnosed gliomas in MRI scans of human brains. The U-Net architecture was set up with a channel sequence of ($16, 32, 64, 128, 256$) and convolution strides of size two. The number of residual units was set to two.
-The results and training behavior is compared to an experiment where an identical U-Net architecture is trained on the centralized data using the same hyperparameter configuration.
-In both cases, the models were trained for 500 epochs, respectively federated rounds.
+In the federated segmentation experiment with JIP Federated, a U-Net \citep{Ronneberger2015U-net:Segmentation} was trained to segment diagnosed gliomas in MRI scans of human brains. The U-Net architecture was set up with a channel sequence of ($16, 32, 64, 128, 256$) and convolution strides of size two. The number of residual units was set to two.
+The results and training behavior is compared to an experiment where an identical U-Net architecture was trained on the centralized data using the same hyperparameter configuration.
+In both cases, the models were trained for 500 epochs, respectively federated rounds. Each federated round consisted of one local epoch on each of the participants.
 % GPU
 The model training computations were performed on graphical processing units (GPUs).
 % Dataset description
-The brain dataset from the \textit{Medical Segmentation Decathlon} was used. The dataset consists of a subset of the Brain Tumor Segmentation (BraTS \cite{Menze2015TheBRATS}) Challenge 2016 and 2017 data \citep{Antonelli2021TheDecathlon}. Besides unlabeled test samples, it contains 484 multi-modal MRI scans and their corresponding labels. 96 of the labeled samples were separated to serve as test data for measuring the model performance. For the experiment, three participating sites were established on individual server instances. Hence, the data was randomly sampled and divided into three non-overlapping subsets. Each instance was provided with 129 samples for training and 32 for testing. For centralized training, the identical data was merged into central datasets and then used for training and testing.
+The brain dataset from the \textit{Medical Segmentation Decathlon} was used. The dataset consists of a subset of the Brain Tumor Segmentation (BraTS) \cite{Menze2015TheBRATS} Challenge 2016 and 2017 data \citep{Antonelli2021TheDecathlon}. Besides unlabeled test samples, it contains 484 multi-modal MRI scans and their corresponding labels. 96 of the labeled samples were separated to serve as test data for measuring the model performance. For the experiment, three participating sites were established on individual server instances. Accordingly, the data was randomly sampled and divided into three non-overlapping subsets. Each instance was provided with 129 samples for training and 32 for testing. For centralized training, the identical data was merged into central datasets and then used for training and testing.
 % bezeichnung der Daten <-- clear naming! 
 In the remainder of this work, this data will be referred to as BraTS dataset.
 
 % optimizer & reference to appendix for details
-To train the model with this data, we used the Adam optimizer (see \cite{Kingma2014Adam:Optimization}) with a 
-learninng rate of $10^{-4}$
+To train the model with this data, we used the Adam optimizer \citep{Kingma2014Adam:Optimization} with a 
+learning rate of $10^{-4}$
 and weight decay of $10^{-5}$.
 % Applied transformations
 For the model training, the brain scans undergo the following transformations.
@@ -154,7 +227,7 @@ Random vertical flipping,
 random spacial cropping ($\textrm{with roi\_size} =  128 \times 128 \times 64$),
 intensity normalization,
 random intensity shifting,
-random intensity scaling.
+and random intensity scaling.
 % ref to MONAI Tutorial
 The parameters of the optimizer, the applied transformations, and the U-Net architecture were adopted from the 3D brain segmentation tutorial\footnote{\url{https://github.com/Project-MONAI/tutorials/blob/master/3d\_segmentation/brats\_segmentation\_3d.ipynb}; commit hash: d340613cea8b0f10b780694c636c1d7ff8f7658d}
 %\footnote{https://github.com/Project-MONAI/tutorials}
@@ -201,6 +274,6 @@ Note that apart from the listed parameters, the Adam optimizer was used with its
   BraTS     & 500   & 1 & Adam  & 2  & $10^{-4}$ & $10^{-5}$ \\
  \end{tabular}
  \end{adjustbox}
- \caption{Training parameters for conducted experiments on MNIST, pneumonia and BraTS data.}
+ \caption[Training parameters for conducted FL experiments]{Training parameters for conducted FL experiments on MNIST, pneumonia and BraTS data}
  \label{tab:TrainingParameters}
 \end{table}

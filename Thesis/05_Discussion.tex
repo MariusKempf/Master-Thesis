@@ -89,22 +89,29 @@ However, the difference of more than seven hours when training on the pneumonia 
 JIP Federated also requires rather a long time for the experiments, which can be explained by the already mentioned large number of required Airflow operators.
 
 
-% ### BraTS Segmentation Experiment ###
-Examining the training behavior of the federated segmentation experiment,
-% Shape of participants
-we find that the curves are very similar for all three participants. The apparent reason for this is that the BraTS data was distributed randomly and not according to its origin or some criteria that influence the imaging, such as the used hardware.
-% Peaks
-Further, they have notable buckles at two points. The first occurs after about ten federated rounds and the second after 300.
-The second buckle can be explained by the learning behavior on the ET tumor region, which in general performs worse and experiences a quick increase at this stage.
 
-% comparing
+Examining the training behavior of the federated segmentation experiment,
+% Federated 
+we find that the curves are very similar for all three participants. The apparent reason for this is that the BraTS data was distributed randomly and not according to its origin or some criteria that influence the imaging, such as the used hardware.
+Further, the curves of the dice scores have notable buckles at two points, which also can be identified in the shape of the loss curve during training. The first occurs after about ten federated rounds and the second after 300. The buckles can also be seen in the ET and TC curves, in the latter in particular the second one is very significant. The first buckle occurs strongly in all dice score curves.
+Furthermore, the curve of the dice score for the ET segmentation mask converges later and less stable compared to the curves for the TC and WT segmentation masks.
+
+% Comparison to centralized
 When comparing the federated experiment with the centralized setting, some differences can be observed as well.
 % buckles
-First, the buckles seen during the federated training do not occur in the traditional setting of training on centralized data. We suspect that this could be due to the chosen \textit{optimizer state treatment}, but have not conducted experiments with other treatment option.
+First, the buckles seen during the federated training do not occur in the traditional setting of training on centralized data. We suspect that this could be due to the chosen \textit{optimizer state treatment}, but have not conducted experiments with other treatment options.
 % slower convergence
-Further, the model converges more slowly in a federated setting. One reason for this is probably the aggregation of the models: a simple average of model parameters cannot adequately combine the knowledge learned at the different sites. This is the usual trade-off FL faces: the convergence could be accelerated by performing fewer local training steps (moving closer to mini-batch gradient descent), but that would increase the communication frequency. % comment Max
+Further, the model converges more slowly in a federated setting. One reason for this is probably the aggregation of the models: a simple average of model parameters cannot adequately combine the knowledge learned at the different sites. This is the usual trade-off FL faces: the convergence could be accelerated by performing fewer local training steps (moving closer to mini-batch gradient descent), but that would increase the communication frequency.
+% "Noise"
+What can also be noted is that in both experiments, the convergence on the TC and ET segmentation masks is less stable than on the WT segmentation masks.
+
 % final performance
-Although the convergence is slower, the model trained with FL achieves a mean dice score of 0.745 after 500 epochs. This is equivalent to 98.58 \% of the performance by the model trained on centralized data (mean dice score of 0.7554). Note also that we did not perform any hyperparameter tuning for FL and just adopted the parameters that were provided in the MONAI tutorial\footnote{\url{https://github.com/Project-MONAI/tutorials/blob/master/3d\_segmentation/brats\_segmentation\_3d.ipynb}}, which was developed on centralized data.
+Although the convergence is slower, the model trained with FL achieves a mean dice score of 0.745 after 500 epochs. This is equivalent to 98.58 \% of the performance by the model trained on centralized data (mean dice score of 0.7554). Thus, it can be said that the federated trained model converges slower, but nearly reaches the upper performance baseline.
+% Performance
+In general, it can be noted that it is more difficult for the models to segment the ET region. Compared to segmenting the TC and WT regions, the dice score is significantly lower. This, of course, also considerably lowers the overall performance measured as mean dice score.
+In both, the federated and centralized experiment, the highest values are obtained on the WT segmentation masks.
+Note also that we did not perform any hyperparameter tuning for FL and just adopted the parameters that were provided in the MONAI tutorial\footnote{\url{https://github.com/Project-MONAI/tutorials/blob/master/3d\_segmentation/brats\_segmentation\_3d.ipynb}; commit hash: d340613cea8b0f10b780694c636c1d7ff8f7658d}, which was developed on centralized data.
+
 % centralized (last testing (val)):    0.7554029747843742
 % federated (last testing (val) avg):  0.7446803177396456
 % compared:                         98.58053814948381

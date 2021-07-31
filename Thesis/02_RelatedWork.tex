@@ -17,7 +17,7 @@ The computing plan using an \textit{aggregation server} can be described as foll
 
 % peer-to-peer
 \textit{Peer-to-peer training} can be described as training across multiple nodes without centralization. No central instance exists, and therefore participants communicate directly with each other. This implies that model aggregation itself also takes place on the individual participants.
-\textit{Peer-to-peer training} generalizes the approaches of \textit{model aggregation} and \textit{sequential training}. Its implementation can be formed in different configurations .%\citep{Chang2018DistributedImaging, Lalitha2019Peer-to-peerGraphs, Roy2019BrainTorrent:Learning}.
+\textit{Peer-to-peer training} generalizes the approaches of \textit{aggregation server} and \textit{sequential training}. The implementation of such a computing plan can be formed in arbitrary configurations \citep{Chang2018DistributedImaging, Lalitha2019Peer-to-peerGraphs, Roy2019BrainTorrent:Learning}.
 
 % privacy
 Although FL provides a basic notion of privacy by keeping the data distributed, additional technical solutions are often required to ensure the privacy and security needed for the clinical application of FL. Kaissis et al. provide an overview of methods for secure and privacy-preserving FL and also possible threats for such learning settings in the field of medical imaging \citep{Kaissis2020SecureImaging}.
@@ -46,7 +46,7 @@ So far, FedML has not been used in academic articles on FL using medical images.
 
 % Openmined / PySyft
 \textbf{PySyft}\footnote{\url{https://github.com/OpenMined/PySyft}}
-is a privacy-preserving FL solution which is originally built over PyTorch but also supports implementations in TensorFlow. It aims to enable developers to write software which can compute over data which is not locally available but on remote machines they do not control. It comes with a large and active open-source community named Openmined\footnote{\url{https://www.openmined.org/}} which is continuously enhancing the solution \citep{Ryffel2018ALearning}. As shown in \Cref{sec:LitRev}, PySyft has already been used in relevant research articles.
+is a privacy-preserving FL solution which is originally built over PyTorch but also supports implementations in TensorFlow. It aims to enable developers to write software which can compute over data which is not locally available but on remote machines they do not control. It comes with a large and active open-source community named Openmined\footnote{\url{https://www.openmined.org/}} which is continuously enhancing the solution \citep{Ryffel2018ALearning}. As shown in \Cref{subsec:LitRev}, PySyft has already been used in relevant research articles.
 
 % PaddleFL
 \textbf{PaddleFL}\footnote{\url{https://github.com/PaddlePaddle/PaddleFL}}
@@ -56,10 +56,10 @@ PFL has not yet been used in published research on FL with medical images.
 
 % TensorFlow Federated
 \textbf{TensorFlow Federated}\footnote{\url{https://www.tensorflow.org/federated}}
-(TFF) extends TensorFlow to facilitate open research and experimentation with FL in a simulated environment. It comes with two APIs: FL API and Federated Core API. Both represent different layers that can be adapted and extended by developers. By providing a multi-machine simulation runtime, TFF can be used for FL experiments applying different algorithms. As TensorFlow itself, TFF is an open-source project. So far, TFF has not been used in academic articles on FL using medical images.
+(TFF) extends TensorFlow to facilitate open research and experimentation with FL in a simulated environment. It comes with two application programming interfaces (APIs): FL API and Federated Core API. Both represent different layers that can be adapted and extended by developers. By providing a multi-machine simulation runtime, TFF can be used for FL experiments applying different algorithms. As TensorFlow itself, TFF is an open-source project. So far, TFF has not been used in academic articles on FL using medical images.
 
 % Disclaimer
-Please note that further solutions may exist. In our understanding, the above-mentioned are the most promising and well-known solutions and have already been examined in other publications.%\cite{Li2019AProtection, He2020FedML:Learning}.
+Please note that further solutions may exist. In our understanding, the above-mentioned are the most promising and well-known solutions and have already been examined in other publications\citep{Li2019AProtection, He2020FedML:Learning}.
 
 
 
@@ -74,21 +74,11 @@ The articles were analyzed regarding the following characteristics: used FL sett
 % real-world
 A setting that trains a model across geographically distributed institutions is referred to as \textit{real-world}.
 % synthetic
-Articles were classified as \textit{synthetic} if a FL solution imitates a distributed system technically, by using multiple workers or computation units, such as individual servers, without having an actual cross-institutional setting. %an actually distributed system.
-% simulated
-\textit{Simulated} implies that no distributed network was used, but it was ensured programmatically that a predefined data partitioning was obeyed during the FL simulation.
-%, for instance, the data was divided according to such a network and used in a locally simulated setting.
+Articles were classified as \textit{synthetic} if a FL solution imitates a distributed system technically, by using multiple workers or computation units, such as individual servers, without having an actual
 
-% categories: real-world, synthetic, simulated
-\Cref{tab:LitSearch} displays the identified articles categorized as either \textit{real-world}, \textit{synthetic}, or \textit{simulated}. The results contain eight articles that used real-world scenarios, while four are classified to be \textit{synthetic} and the remaining eight articles as \textit{simulated}.
-% FL Solution
-Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Federated\cite{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles (PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data) .%\citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.  
-Four solutions do not use a specific framework, but customized solutions for the given setting.%\cite{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
-
-
-% TODO: Add complete table somehow!
-\begin{table*}[h!]
-\begin{adjustbox}{width=1\textwidth}
+\begin{sidewaystable}[htbp]
+%\begin{adjustbox}{width=1.0\textwidth}
+\begin{adjustbox}{width=1.0\textheight}
   \centering
   \begin{tabular}{cccccccc}
     Reference & FL Setting & FL Solution & Participants & Computing Plan & Algorithm & Task \\
@@ -115,12 +105,20 @@ Four solutions do not use a specific framework, but customized solutions for the
     \cite{Flores2021FederatedPatients}\rlap{*}          & real-world & NVIDIA Clara Federated   & 20            & FedAvg                    & ResNet34          & Classification \\
   \end{tabular}
   \end{adjustbox}
-  \caption{List of articles applying FL using medical images in a real-world, synthetic, or simulated scenario (*Preprint)}
+  \caption[Identified articles applying FL using medical image data]{List of identified articles applying FL using medical images in a real-world, synthetic, or simulated scenario (*Preprint)}
   \label{tab:LitSearch}
-\end{table*}
+\end{sidewaystable}
 
+cross-institutional setting.
+% simulated
+\textit{Simulated} implies that no distributed network was used, but it was ensured programmatically that a predefined data partitioning was obeyed during the FL simulation.
+%, for instance, the data was divided according to such a network and used in a locally simulated setting.
 
-% TODO: Write more text about the found entries! - Mehr Ttext dazu, z.B. nennen wie viele simulated setting nutzen etc.
+% categories: real-world, synthetic, simulated
+\Cref{tab:LitSearch} displays the identified articles categorized as either \textit{real-world}, \textit{synthetic}, or \textit{simulated}. The results contain eight articles that used real-world scenarios, while four are classified to be \textit{synthetic} and the remaining eight articles as \textit{simulated}.
+% FL Solution
+Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Federated\cite{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles (PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data) \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.  
+Four solutions do not use a specific framework, but customized solutions for the given setting \cite{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
 
 
 
@@ -129,23 +127,29 @@ Four solutions do not use a specific framework, but customized solutions for the
 \label{subsec:JIP}
 
 % intro
-Our developed solution for FL in the medical environment is based on the Joint Imaging Platform for Federated Clinical Data Analytics (JIP).
+Our developed solution for FL in the medical environment is based on the Joint Imaging Platform for Federated Clinical Data Analytics (JIP) \citep{Scherer2020JointAnalytics}.
 % General
 The JIP provides a distributed infrastructure for image analysis and machine learning across the sites of the strategic initiative German Cancer Consortium\footnote{\url{https://dktk.dkfz.de/en}} (DKTK). The platform was developed and is maintained by the German Cancer Research Center. In addition to the DKTK sites, the JIP is also up and running in the majority of university clinics across Germany. The standardized infrastructure offers great potential for federated collaboration. It builds the foundation for our FL solutions presented in \Cref{sec:Methods}.
 
 % Technology
-The technological backbone consists of five components that build the general architecture: JIP SYSTEM, JIP BASE, JIP STORE, JIP META, and JIP FLOW. All components are based on open-source technologies, which makes the JIP a publicly available open-source project itself\footnote{\url{https://github.com/kaapana/kaapana}}. The system was designed in such a way that it is easy to run in a protected hospital IT infrastructure. The platform is operated from the browser and protected by a single sign-on.  \Cref{fig:JIP} provides an overview of the used technology stack of the JIP.
+The technological backbone consists of five components that build the general architecture: JIP SYSTEM, JIP BASE, JIP STORE, JIP META, and JIP FLOW. All components are based on open-source technologies, which makes the JIP a publicly available open-source project itself\footnote{\url{https://github.com/kaapana/kaapana}}. The system was designed in such a way that it is easy to run in a protected hospital IT infrastructure. The platform is operated from a graphical user interface (GUI) in the browser and protected by a single sign-on. \Cref{fig:JIP} provides an overview of the used technology stack of the JIP.
+
+% Without Helm
+%The key components for implementing FL are MinIO\footnote{\url{https://min.io/}} and Apache Airflow\footnote{\url{https://airflow.apache.org/}} in combination with Kubernetes\footnote{\url{https://kubernetes.io/}}.
+
+The key components for implementing FL are MinIO\footnote{\url{https://min.io/}}, Apache Airflow\footnote{\url{https://airflow.apache.org/}} in combination with Kubernetes\footnote{\url{https://kubernetes.io/}}, and Helm\footnote{\url{https://helm.sh/}}.
+% Minio
+MinIO is a broadly used high performance object storage which comes with a powerful API. To organize the hosted objects, MinIO uses buckets, which are similar to a folder or a directory of a file system. 
+% Airflow
+Airflow allows automatic parallel execution of workflows across the underlying computing cluster. These workflows in Airflow are formally defined as \textit{Directed Acyclic Graphs} (DAGs). Each node of a DAG represents an operator, carrying out one specific task of the workflow. To do this, either a python script or a Docker\footnote{\url{https://www.docker.com/}} container is started and executed.
+These successive tasks represent the logical sequence for FL with the JIP.
+% short Helm intro
+Helm is a package manager for Kubernetes, which organizes packages containing everything needed to run an application, tool, or service inside a Kubernetes cluster.
 
 % JIP architecture
 \begin{figure}[htbp]
     %\centerline{\includegraphics[width=1.0\columnwidth]{images/JIParchitecture.pdf}}
     \centerline{\includegraphics[width=1.0\columnwidth]{1_Figures/JIParchitecture.png}}
-    \caption{Architecture and technology stack of the JIP, replicated from \cite{Scherer2020JointAnalytics}}
+    \caption[Architecture and technology stack of the JIP]{Architecture and technology stack of the JIP, replicated from \cite{Scherer2020JointAnalytics}}
 \label{fig:JIP}
 \end{figure}
-
-The key components for implementing FL are the object store MinIO\footnote{\url{https://min.io/}} and Apache Airflow\footnote{\url{https://airflow.apache.org/}} in combination with Kubernetes\footnote{\url{https://kubernetes.io/}}.
-
-% Airflow
-Airflow allows automatic parallel execution of workflows across the underlying computing cluster. These workflows in Airflow are formally defined as \textit{Directed Acyclic Graphs} (DAGs). Each node of a DAG represents an operator, carrying out one specific task of the workflow. To do this, either a python script or a processing container is started and executed.
-These successive tasks represent the logical sequence for FL with the JIP \citep{Scherer2020JointAnalytics}.
