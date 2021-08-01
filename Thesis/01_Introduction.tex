@@ -1,15 +1,96 @@
 \section{Introduction}
 \label{sec:Introduction}
 
+% good old time
+From the moment it was possible to load and store medical images into a computer, researchers have begun to develop solutions for automated image analysis.
+Initially, analysis was done by, from today's perspective, simple rule-based systems.
+Later on, also machine learning (ML) techniques were applied. For the first applications of machine learning, features were extracted manually. Sample data was collected, and \textit{handcrafted} feature vectors containing information about characteristics such as shapes, sizes or edges were derived from the images. 
+Then, the features were entered as input to an ML model such as a multilayer perceptron (MLP) \citep{Rumelhart1986LearningErrors} or a support vector machine (SVM) \citep{Vapnik1995TheTheory}. During training, the models search for the most optimal decision boundary, which is then used to separate the classes (in case of a classification).
 
+% machine learning with cnns
+The next step was to leave it to the computers, respectively models, to decide what information they need from an image to serve as a good representation. The concept lets layered networks extract the features themselves by starting with high-level features and going down to very specific low-level features. To this day, the most successful type of such models for image analysis are convolutional neural networks (CNNs). The architectures contain a multitude of layers which transform their input by applying convolutional filters. This first part of the model can be referred to as \textit{feature-extractor}, because it generates meaningful features based on the given input by applying convolutions. It is followed by a classifier, using the extracted features for its decision-making. In contrast to previous approaches, convolutional neural networks are an end-to-end processing architecture using the raw input images. For computer vision (CV), convolutional neural networks are the technology of choice to this day.
+
+Back in the year 1998, \cite{LeCun1998Gradient-basedRecognition} published first pioneering work using such CNNs in the real-world application of hand-written digit recognition.
+Over time, convolutional neural networks were used for increasingly complex applications and thus the models became also more complex, having millions of trainable parameters.
+This was only possible because the available computing resources and the available image data grew at the same.
+% übergang zu deep learning
+The size of the models and the architecture of consecutively stacked layers led to the term Deep Learning (DL) \citep{Lecun2015DeepLearning}.
+A major breakthrough was the publication of \cite{Krizhevsky2012ImageNetNetworks} within the context of the ImageNet challenge\footnote{\url{https://www.image-net.org/index.php}} in 2012. The authors introduced a convolutional neural network referred to as AlexNet and won the challenge by a large margin.
+Following this performance leap, related architectures were developed, that became even deeper.
+
+The recent years have proved that deep learning is able to achieve state-of-the-art performance, even surpassing human-level performance, on a multitude of different tasks not only in computer vision but also in speech recognition and natural language processing \cite{HeDelvingClassification, Hinton2012DeepGroups, Devlin2019BERT:Understanding}. Also, within the medical domain, deep learning has gained attention, and models with expert-level performance have been reported \citep{Esteva2017Dermatologist-levelNetworks}.
+
+% amount of data
+The availability of huge amounts of annotated data is one of the key factors for this success, namely datasets such as ImageNet \cite{Deng2009ImageNet:Database}. Deep learning in the medical domain is not different in that regard: To achieve human-level or clinical-grade performance, the amount and quality of annotated data available for model development are crucial. This applies in particular to very rare diseases or diseases with highly heterogeneous disorders \cite{Esteva2017Dermatologist-levelNetworks, DeFauw2018ClinicallyDisease, Dluhos2017Multi-centerApproach}. %(such as schizophrenia)
+
+% Potential
+% The potential which lies in application of deep learning in combination with a lot of data is imense.
+% .. Bisschen Ausblick was alls verrücktes Möglich wäre
+
+% Privacy & Barriers
+When privacy is not a concern, the available data is usually centralized at one location and is then used for model training. Often, the datasets are even made publicly available as a contribution to the scientific community. In the medical domain, however, data is highly personal and, therefore, sensitive in terms of patients' privacy. Conclusively, its usage is strictly regulated and comes with a multitude of barriers and regulations such as the United States \textit{Health Insurance Portability and Accountability Act} (HIPPA \cite{USDepartmentofHealthandHumanServices2020HealthHIPPA}) or the European \textit{General Data Protection Regulation} (GDPR\cite{IntersoftConsulting2016GeneralGDPR}) \cite{vanPanhuis2014AHealth}.
+
+% Federated Learning
+A paradigm to address and overcome the challenges of data volume and privacy while still allowing to learn over multiple, distributed instances, is Federated Learning (FL). Federated learning decouples the model training from the need for direct access to the raw training data of each participant. Its collaborative approach of aggregating knowledge from models trained in a decentralized manner works without accessing or exchanging the underlying data \cite{BrendanMcMahan2017}.
+
+% Application in Health care
+Initially developed for learning from private data on mobile devices, such as written text, it is also applicable within the medical domain. One can think of a multitude of different applications of federated learning in healthcare \cite{Xu2021}. For instance, by applying federated learning on distributed electronic health records, a Support Vector Machine, Multi-layer Perceptron, and Logistic Regression model have been trained to predict adverse drug reactions of patients and have achieved comparable performance metrics to models trained on centralized data \cite{Choudhury2019PredictingLearning}. It has also been shown that federated learning can be used to improve models predicting the in-hospital mortality of patients admitted to the intensive care unit \cite{Sharma2019PreservingMortality}.
+
+% FL medical images
+In recent times, an increasing number of publications address federated learning in the context of medical image data and therefore combine federated learning with deep learning.
+For instance, Kaissis et al. applied federated deep learning on paediatric chest x-ray images, showing classification performance similar to locally trained models while maintaining patient privacy \cite{Kaissis2021End-to-endImaging}.
+Sheller et al. trained a model for tumor segmentation with federated learning, simulating a real distribution across institutions by separating  magnetic resonance image (MRI) scans of subjects with brain tumors according to the meta-information about the origin of the images. The authors showed that 99\% of the model performance compared to training on centralized data is reached \cite{Sheller2020FederatedData}.
+Roth et al. showed that models trained in a federated manner perform on average 6.3\% better than their counterparts trained on the locally available data only. The objective was to classify breast density based on mammographic images. Their work has a distinctive characteristic: federated learning was applied in a real-world scenario \cite{Roth2020FederatedImplementation}.
+While many publications report federated learning experiments in a simulated setting, only few performed experiments across geographically distributed institutions (see \Cref{sec:LitRev}).
+
+% Problem Statement
+% Contextualize the problem -  Now: real-world solutions needed
+To fully profit from federated learning in healthcare, technical solutions for its real-world application need to be identified. Currently, there is a lot of activity resulting in promising projects which address this topic. Frameworks such as \textit{PySyft} \cite{Ryffel2018ALearning} or platform solutions like \textit{NVIDIA Clara Federated}\footnote{\url{https://developer.nvidia.com/clara}} have attracted attention in the research community and are contributing to make federated learning real-world. While these federated learning solutions are tackling the challenges with available but private data, the healthcare sector is a very specific environment. Therefore, a possible application in real clinics comes with specific requirements to the eligible solutions.
+
+% Set your aims and objectives - requirements / comparison
+This work investigates which functionalities are provided by current FL solutions and what technical requirements are necessary to bridge the gap between FL solutions and their application in medical institutions. 
+% implementation & experiments
+Further, we demonstrate how the Joint Imaging Platform\footnote{https://jip.dktk.dkfz.de/jiphomepage/} (JIP\citep{Scherer2020JointAnalytics}) can be used for FL in two ways.
+Due to the JIP's openness and flexibility, it can be easily combined with other solutions. Therefore, one option is to integrate another FL solution into the JIP, as we demonstrate with the integration of PySyft. Further, the already existing components of the JIP can be used to realize FL - this is what we introduce as JIP Federated. For both options, the implementations are described in detail. 
+In addition, we conducted experiments to measure the runtime of the JIP-based solutions, as well as the performance of JIP Federated when segmenting gliomas in brain MRI scans.
+
+% contributions
+With this work, we make the following contributions:
+\begin{itemize}
+    \item We compare existing FL solutions based on requirements derived from the healthcare and medical image domain. To the best of our knowledge, there is no comprehensive comparison of existing solutions regarding our domain. Thus, we provide researchers and practitioners with an overview of their options in the area of federated learning in healthcare.
+    \item We integrate PySyft into the Joint Imaging Platform to serve as a federated learning solution. Existing solutions mostly do not provide the required features for a medical environment. Hence, we demonstrate the benefit of the Joint Imaging Platform being a flexible open-source platform by combining its advantages with an existing federated learning solutions.
+    \item We implement JIP Federated and demonstrate its capability in a multi-node setup. Thus, we provide an open-source solution, based on the Joint Imaging Platform, to conduct real-world federated learning on medical images in a clinical environment.
+\end{itemize}
+
+% explain structure of work
+The remainder of the work is organized as follows. \Cref{sec:RelatedWork} reviews the related work in terms of federated learning and its application on medical images. In \cref{sec:Methods} the applied methods to compare federated learning solutions are provided. Further, it describes the implementations that have been developed and the setup of our experiments. Results are provided in \Cref{sec:Results}. \Cref{sec:Discussion} discusses the results and points out limitations. \Cref{sec:ConclusionOutlook} concludes our article with remarks on possible future work.
+
+
+
+
+
+
+
+
+
+% OLD BACKUP
+
+\begin{comment}
+ 
 % Einstieg: Federated Learning for Thyroid Ultrasound Image Analysis to Protect Personal Information: Validation Study in a Real Health Care Environment
 % Einstieg: Preserving Patient Privacy while Training a Predictive Model of In-hospital Mortality
 
-The recent years have proved that deep learning (DL) \citep{Lecun2015DeepLearning} is able to achieve state-of-the-art performance, even surpassing human-level performance, on a multitude of different tasks ranging from computer vision and speech recognition to natural language processing \citep{He2015DelvingClassification, Hinton2012DeepGroups, Devlin2019BERT:Understanding}. Also, within the medical domain, deep learning has gained attention, and models with expert-level performance have been reported \citep{Esteva2017Dermatologist-levelNetworks}.
+The recent years have proved that deep learning% (DL) \citep{Lecun2015DeepLearning}
+is able to achieve state-of-the-art performance, even surpassing human-level performance, on a multitude of different tasks ranging from computer vision and speech recognition to natural language processing \citep{He2015DelvingClassification, Hinton2012DeepGroups, Devlin2019BERT:Understanding}. Also, within the medical domain, deep learning has gained attention, and models with expert-level performance have been reported \citep{Esteva2017Dermatologist-levelNetworks}.
 
 % amount of data
 The availability of huge amounts of annotated data is one of the key factors for this success, namely datasets such as ImageNet \citep{Deng2009ImageNet:Database}. Deep learning in the medical domain is not different in that regard: To achieve human-level or clinical-grade performance, the amount and quality of annotated data available for model development are crucial. This applies in particular to very rare diseases or diseases with highly heterogeneous disorders \citep{Esteva2017Dermatologist-levelNetworks, DeFauw2018ClinicallyDisease, Dluhos2017Multi-centerApproach}.
 %(such as schizophrenia)
+
+% Potential
+% The potential which lies in application of deep learning in combination with a lot of data is imense.
+% .. Bisschen Ausblick was alls verrücktes Möglich wäre
+
 
 % Privacy & Barriers
 When privacy is not a concern, the available data is usually centralized at one location and is then used for model training. Often, the datasets are even made publicly available as a contribution to the scientific community. In the medical domain, however, data is highly personal and, therefore, sensitive in terms of patients' privacy. Conclusively, its usage is strictly regulated and comes with a multitude of barriers and regulations, such as the United States \textit{Health Insurance Portability and Accountability Act} (HIPPA \cite{USDepartmentofHealthandHumanServices2020HealthHIPPA}) or the European \textit{General Data Protection Regulation} (GDPR\cite{IntersoftConsulting2016GeneralGDPR}) \citep{vanPanhuis2014AHealth}.
@@ -38,3 +119,6 @@ This work investigates which functionalities are provided by current FL solution
 Further, we demonstrate how the Joint Imaging Platform\footnote{\url{https://jip.dktk.dkfz.de/jiphomepage/}} (JIP) by \cite{Scherer2020JointAnalytics} can be used for FL in two ways.
 Due to the JIP's openness and flexibility, it can be easily combined with other solutions. Therefore, one option is to integrate another FL solution into the JIP, as we demonstrate with the integration of PySyft. Further, the already existing components of the JIP can be used to realize FL - this is what we introduce as JIP Federated. For both options, the implementations are described in detail. 
 In addition, we conducted experiments to measure the runtime of the JIP-based solutions, as well as the performance of JIP Federated when segmenting gliomas in brain MRI scans.
+
+\end{comment}
+ 

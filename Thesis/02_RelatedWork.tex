@@ -10,7 +10,7 @@ In the traditional data-sharing paradigm, multiple institutions collaborate with
 To realize such a collaborative effort, different design choices for FL can be implemented. A distinction can be made on the basis of the topology and the FL compute plan. The topology can be implemented as either centralized or decentralized, meaning the communication is routed via a central server or happens directly between the participants. Popular computing plans are \textit{sequential training}, \textit{peer-to-peer training}, and the usage of an \textit{aggregation server} \citep{Rieke2020TheLearning}.
 
 % Sequential Training
-\textit{Sequential training} refers to a training process in which the model is continuously passed on from participant to participant, so each of them waits until the predecessor is finished. The participants can train the model locally for several steps or epochs, depending on the configuration of the training \citep{Chang2018DistributedImaging}. One challenge when applying this computing plan is that it is negatively affected by a phenomenon known as \textit{catastrophic forgetting} (see \cite{French1999CatastrophicNetworks}), which results in a model highly favoring the data it was trained on most recently.
+\textit{Sequential training} refers to a training process in which the model is continuously passed on from participant to participant, so each of them waits until the predecessor is finished. The participants can train the model locally for several steps or epochs, depending on the configuration of the training \citep{Chang2018DistributedImaging}. One challenge when applying this computing plan is that it is negatively affected by a phenomenon known as \textit{catastrophic forgetting} \citep{French1999CatastrophicNetworks}, which results in a model highly favoring the data it was trained on most recently.
 
 % Aggregation
 The computing plan using an \textit{aggregation server} can be described as follows. At the start of the collaborative training, a machine learning model is sent to all participants. Each replica is individually trained on the locally available data, and then the updated models are sent back to the central server. After receiving the models with their new states, they are aggregated using an aggregation algorithm. The initially proposed is \textit{Federated Averaging} (FedAvg), which is still most widely used today. It computes a weighted average of the received model's parameters, and the resulting consensus model is then again shared with each participant for further training. This process is carried out repeatedly, with each iteration being referred to as a federated round \citep{BrendanMcMahan2017}.
@@ -32,7 +32,7 @@ In order to realize FL, technical solutions are required. One can either use a c
 
 % NVIDIA Clara Federated
 \textbf{NVIDIA Clara Train SDK}
-extends the NVIDIA Clara application framework optimized for the healthcare domain. It comes with useful features for medical images and enables developers to train models across institutions. In addition, it has already found some application in academia, as pointed out in the literature review in \Cref{subsec:LitRev}. In contrast to other solutions, the source code is not publicly available.
+extends the NVIDIA Clara application framework optimized for the healthcare domain. It comes with useful features for medical images and enables developers to train models across institutions. In addition, it has already found some application in academia, as pointed out in the literature review in \Cref{subsec:LitRev} (see page \pageref{subsec:LitRev}). In contrast to other solutions, the source code is not publicly available.
 
 % FATE
 \textbf{Federated AI Technology Enabler}\footnote{\url{https://fate.fedai.org/}}
@@ -46,7 +46,7 @@ So far, FedML has not been used in academic articles on FL using medical images.
 
 % Openmined / PySyft
 \textbf{PySyft}\footnote{\url{https://github.com/OpenMined/PySyft}}
-is a privacy-preserving FL solution which is originally built over PyTorch but also supports implementations in TensorFlow. It aims to enable developers to write software which can compute over data which is not locally available but on remote machines they do not control. It comes with a large and active open-source community named Openmined\footnote{\url{https://www.openmined.org/}} which is continuously enhancing the solution \citep{Ryffel2018ALearning}. As shown in \Cref{subsec:LitRev}, PySyft has already been used in relevant research articles.
+is a privacy-preserving FL solution which is originally built over PyTorch but also supports implementations in TensorFlow. It aims to enable developers to write software which can compute over data which is not locally available but on remote machines they do not control. It comes with a large and active open-source community named Openmined\footnote{\url{https://www.openmined.org/}} which is continuously enhancing the solution \citep{Ryffel2018ALearning}. As shown in \Cref{subsec:LitRev} (see page \pageref{subsec:LitRev}), PySyft has already been used in relevant research articles.
 
 % PaddleFL
 \textbf{PaddleFL}\footnote{\url{https://github.com/PaddlePaddle/PaddleFL}}
@@ -59,7 +59,7 @@ PFL has not yet been used in published research on FL with medical images.
 (TFF) extends TensorFlow to facilitate open research and experimentation with FL in a simulated environment. It comes with two application programming interfaces (APIs): FL API and Federated Core API. Both represent different layers that can be adapted and extended by developers. By providing a multi-machine simulation runtime, TFF can be used for FL experiments applying different algorithms. As TensorFlow itself, TFF is an open-source project. So far, TFF has not been used in academic articles on FL using medical images.
 
 % Disclaimer
-Please note that further solutions may exist. In our understanding, the above-mentioned are the most promising and well-known solutions and have already been examined in other publications\citep{Li2019AProtection, He2020FedML:Learning}.
+Please note that further solutions may exist. In our understanding, the above-mentioned are the most promising and well-known solutions and have already been examined in other publications \citep{Li2019AProtection, He2020FedML:Learning}.
 
 
 
@@ -117,8 +117,8 @@ cross-institutional setting.
 % categories: real-world, synthetic, simulated
 \Cref{tab:LitSearch} displays the identified articles categorized as either \textit{real-world}, \textit{synthetic}, or \textit{simulated}. The results contain eight articles that used real-world scenarios, while four are classified to be \textit{synthetic} and the remaining eight articles as \textit{simulated}.
 % FL Solution
-Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Federated\cite{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles (PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data) \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.  
-Four solutions do not use a specific framework, but customized solutions for the given setting \cite{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
+Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Federated \citep{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles (PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data) \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.  
+Four solutions do not use a specific framework, but customized solutions for the given setting \citep{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
 
 
 
@@ -129,7 +129,7 @@ Four solutions do not use a specific framework, but customized solutions for the
 % intro
 Our developed solution for FL in the medical environment is based on the Joint Imaging Platform for Federated Clinical Data Analytics (JIP) \citep{Scherer2020JointAnalytics}.
 % General
-The JIP provides a distributed infrastructure for image analysis and machine learning across the sites of the strategic initiative German Cancer Consortium\footnote{\url{https://dktk.dkfz.de/en}} (DKTK). The platform was developed and is maintained by the German Cancer Research Center. In addition to the DKTK sites, the JIP is also up and running in the majority of university clinics across Germany. The standardized infrastructure offers great potential for federated collaboration. It builds the foundation for our FL solutions presented in \Cref{sec:Methods}.
+The JIP provides a distributed infrastructure for image analysis and machine learning across the sites of the strategic initiative German Cancer Consortium\footnote{\url{https://dktk.dkfz.de/en}} (DKTK). The platform was developed and is maintained by the German Cancer Research Center. In addition to the DKTK sites, the JIP is also up and running in the majority of university clinics across Germany. The standardized infrastructure offers great potential for federated collaboration. It builds the foundation for our FL solutions presented in \Cref{sec:Methods} (see page \pageref{sec:Methods}).
 
 % Technology
 The technological backbone consists of five components that build the general architecture: JIP SYSTEM, JIP BASE, JIP STORE, JIP META, and JIP FLOW. All components are based on open-source technologies, which makes the JIP a publicly available open-source project itself\footnote{\url{https://github.com/kaapana/kaapana}}. The system was designed in such a way that it is easy to run in a protected hospital IT infrastructure. The platform is operated from a graphical user interface (GUI) in the browser and protected by a single sign-on. \Cref{fig:JIP} provides an overview of the used technology stack of the JIP.

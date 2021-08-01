@@ -6,7 +6,7 @@
 
 % Reference to the table
 \Cref{tab:ToolComparison} summarizes the results of our requirement analysis and the comparison of the FL solutions considered in this work. The identified requirements are described in more detail below. Please note that entries marked with a hyphen could not be determined with full confidence by the author team\footnote{Not all the available resources are detailed enough to allow a reliable classification.}.
-The two entries marked by additional brackets are explained in \Cref{subsec:DiscussionRequirements}.
+The two entries marked by additional brackets are explained in \Cref{subsec:DiscussionRequirements} (see \pageref{subsec:DiscussionRequirements}).
 
 
 \begin{sidewaystable}[htbp]
@@ -97,7 +97,7 @@ Based on the two classification experiments, we compare the JIP's PySyft integra
 %\begin{figure}[h!]
     %\centerline{\includegraphics[width=1.0\textwidth]{1_Figures/RuntimeExperiments.pdf}}
     \centerline{\includegraphics[width=1.0\textwidth]{1_Figures/RuntimeExperiments_horizontal.pdf}}
-    \caption[Loss curves during training on MNIST and pneunomia images]{Loss curves during raining on MNIST and pneumonia images using the JIP's PySyft integration (red) and JIP Federated (blue)}
+    \caption[Loss curves during model training on MNIST and pneunomia images]{Loss curves during model training on MNIST and pneumonia images using the JIP's PySyft integration (red) and JIP Federated (blue)}
 \label{fig:RuntimeExp}
 \end{figure}
 
@@ -152,7 +152,7 @@ The segmentation experiment on the BraTS data serves to demonstrate that JIP Fed
 % mean dice score and figure
 \Cref{fig:BraTSplots} shows the training loss together with the mean dice score and the three available segmentation masks on the test data for each federated round.
 
-The mean dice score is build as the average of the three different label masks (ET, TC, WT) described in \Cref{subsec:MethodsExperiments}. 
+The mean dice score is build as the average of the three different label masks (ET, TC, WT) described in \Cref{subsec:MethodsExperiments} (see \pageref{subsec:MethodsExperiments}. 
 Each data point represents the mean value over one epoch, respectively, one iteration on the corresponding data.
 
 % illustration
@@ -162,7 +162,7 @@ As upper baseline, the curves of the model training on the centralized data are 
 %\begin{figure}[htbp]
 \begin{figure}[t!]
     %\centerline{\includegraphics[width=1.0\textwidth]{1_Figures/BraTSexperiments.pdf}}
-    \centerline{\includegraphics[width=1.0\textwidth]{1_Figures/BraTSexperiments_all.pdf}}
-    \caption[Training loss and dice scores of the conducted BraTS experiments]{Training loss and testing performance of models trained on centralized data (blue) and in a federated scenario across three participating clinics (red). Curves are displayed for the three segmentation masks tumor core (TC), whole tumor (WT), enhancing tumor (ET) and their mean scores.}
-\label{fig:BraTSplots}
+    \centerline{\includegraphics[width=1.0\textwidth]{1_Figures/BraTSexperiment_all.pdf}}
+    \caption[Training loss and dice scores of the conducted BraTS experiment]{Training loss and testing performance of models trained on centralized data (blue) and in a federated scenario across three participating clinics (red). Curves are displayed for the three segmentation masks tumor core (TC), whole tumor (WT), enhancing tumor (ET) and their mean scores.}
+    \label{fig:BraTSplots}
 \end{figure}
