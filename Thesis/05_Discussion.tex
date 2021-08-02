@@ -8,32 +8,32 @@ When examining the previously presented comparison (see \Cref{subsec:ResultsRequ
 % GPU 
 Apart from PySyft all FL solutions support GPU. This also applies to the current version of the PriMIA extension, which has been adapted for the field of medical image data.
 % PACS & DICOM
-Both, NVIDIA Clara Federated and JIP Federated provide an adapter for the clinical PACS, which is particularly advantageous in the field of medical image processing, while all others do not. The same applies to the support of the DICOM format, which is equally essential.
+Both, NVIDIA Clara Train and JIP Federated provide an adapter for the clinical PACS, which is particularly advantageous in the field of medical image processing, while all others do not. The same applies to the support of the DICOM format, which is equally essential.
 Note that PriMIA extends PySyft in such a way that it supports DICOM while PySyft itself does not.
 % Information
 Except for PySyft and PaddleFL all solutions come with extensive information. While PySyft does not yet provide a complete and detailed documentation, the resources regarding PaddleFL are not fully provided in English language. In addition, the community of PaddleFL communicates mainly in Chinese.
 
 % privacy things - Lack of privacy mechanism on JIP federated
 When comparing the privacy mechanisms, a weakness of JIP Federated becomes apparent. All other solutions support at least one of the considered mechanisms, whereas JIP Federated has not implemented any mechanism yet.
-Note that TFF does not natively come with Differential Privacy. However, it can be seamlessly added by using TensorFlow Privacy\footnote{\url{https://github.com/tensorflow/privacy}}, which is completely interoperable with TFF.
+Note that TFF does not natively come with differential privacy. However, it can be seamlessly added by using TensorFlow Privacy\footnote{\url{https://github.com/tensorflow/privacy}}, which is completely interoperable with TFF.
 While the implementation of such mechanisms is beyond the scope of this work, it is foreseeable that this will be one of the next steps in further development. % hier angebracht?
 Until then, this is an obvious disadvantage of JIP Federated.
 
 % Platform solutions
-NVIDIA Clara Federated and JIP Federated are both extensive platform solutions with features for the healthcare environment, and in particular for working with medical images.
+NVIDIA Clara Train and JIP Federated are both extensive platform solutions with features for the healthcare environment, and in particular for working with medical images.
 % Distinction between NVIDIA Clara and JIP Federated
 The differences between the two solutions are the following. While the codebase of NIVDIA Clara Federated is not publicly available, JIP Federated is fully open-source. This allows developers to extend the solution according to their needs, to understand the functionalities, and therefore trust the solution.
 From our perspective, all this can be seen as advantageous.
-Further, NVIDIA Clara Federated provides the privacy mechanisms Differential Privacy and Homomorphic Encryption, which is a major advantage compared to JIP Federated, which does not support such mechanisms yet.
+Further, NVIDIA Clara Train provides the privacy mechanisms differential privacy and homomorphic encryption, which is a major advantage compared to JIP Federated, which does not support such mechanisms yet.
 
 % Limitation
-Please note that this categorization was done to the best of our knowledge and based on the available information. As mentioned before, it was not always easy to identify the relevant details in the given information.
+Please note that this categorization was done to the best of our knowledge and based on the available information. As mentioned before, it was not always straightforward to identify the relevant details in the given information.
 
 
 
 
 
-\subsection{Implementation of PySyft Integration \& JIP Federated}
+\subsection{Implementation of the PySyft Integration \& JIP Federated}
 \label{subsec:DiscussionImplementation}
 % ### PySyft Integration ###
 % (Docker) container integration
@@ -57,7 +57,7 @@ Especially, the scheduling DAG on the central instance requires numerous operato
 Since each operator needs time to be started up and shut down again, even tasks that are actually fast require more time.
 % idle time disadvantage relative
 This idle time accumulates and adds up to the actual processing time. This disadvantage is reduced in its impact for experiments in which the actual training on the participants takes a larger share of the overall workflow time than the process on the central instance.
-This is particularly evident in the results of the runtime experiments listed in \Cref{tab:RuntimeExp}.
+This is particularly evident in the results of the runtime experiments listed in \Cref{tab:RuntimeExp} (see page \pageref{tab:RuntimeExp}).
 The implementations' runtime for model training does differ only by a few minutes when using MNIST data. In contrast, PySyft requires more than twice as long as JIP Federated for the more complex task on the pneumonia data.
 
 % Different data handling % Transformations

@@ -14,7 +14,7 @@ The two entries marked by additional brackets are explained in \Cref{subsec:Disc
 \begin{adjustbox}{width=0.8\textheight}
 %\begin{adjustbox}{width=0.8\textwidth}
   \begin{tabular}{llccccccc}
-    \multicolumn{2}{c}{Requirement} & TFF & FedML & FATE & PaddleFL & PySyft & \makecell{NVIDIA Clara \\ Federated} & \makecell{JIP \\ Federated} \\
+    \multicolumn{2}{c}{Requirement} & TFF & FedML & FATE & PaddleFL & PySyft & \makecell{NVIDIA Clara \\ Train} & \makecell{JIP \\ Federated} \\
     \hline \\[-2.5ex] %[-1.5ex]
     
     \multicolumn{2}{l}{Open-source}                                             & \cmark & \cmark & \cmark & \cmark & \cmark & \xmark & \cmark \\
@@ -62,7 +62,7 @@ We therefore consider the ability to implement at least these two compute plans 
 
 % privacy mechanisms
 To maintain the data privacy and security of communication and thus the motivation behind FL, the solutions should provide \textit{privacy mechanisms} to address potential attacks and information leakage. While there might be further ones, we include the following mechanisms retrieved from \cite{Kaissis2020SecureImaging} in our comparison:
-Differential Privacy \citep{Dwork2014ThePrivacy}, Homomorphic Encryption \citep{Acar2018AImplementation}, and Secure Multi-Party Computation \citep{Zhao2019SecureApplications}.
+differential privacy \citep{Dwork2014ThePrivacy}, homomorphic encryption \citep{Acar2018AImplementation}, and secure multi-party computation \citep{Zhao2019SecureApplications}.
 % "Secure Aggregation is a class of Secure Multi-Party Computation algorithms"
 
 % ### Technical Requirements ###
@@ -72,14 +72,13 @@ Although it is possible to run computationally expensive experiments on the CPU,
 % DICOM format - medical imaging format & image data sets (multi-model dataset with arbitrary modality and dimension)
 Another important requirement in a clinical setting is the  compatibility with medical \textit{image data formats}, such as \textit{Digital Imaging and Communication in Medicine} (DICOM) \citep{Kaissis2021End-to-endImaging}.
 % PACS connectivity
-In addition to the support of DICOM as data format, it is essential for the solutions' application in clinics that they  include an adapter to the \textit{Picture Archiving and Communication System} (PACS). PACS is the system for managing and archiving medical images and is connected to the clinic's imaging hardware.
+In addition to the support of DICOM, it is essential for the solutions' application in clinics that they  include an adapter to the \textit{Picture Archiving and Communication System} (PACS). PACS is the system for managing and archiving medical images and is connected to the clinic's imaging hardware.
 % Open-source - proprietary - open-source / non proprietary solutions preferred
 Because of the healthcare environment being highly sensitive, as well as individual for each site, solutions are required that are as flexible and adaptable as possible. In addition, the lock-in effect needs to be prevented. Therefore, it is relevant whether the solution is \textit{open-source} or proprietary from one provider.
 % Offline installation
 This is accompanied by an interest in the possibility of \textit{offline installation}, meaning that the solution is installable and runnable in an environment disconnected from the internet.
 % Information
 From a developer's perspective, it is also relevant to have \textit{information} about the solution's implementation and usage. Accordingly, we also include the availability of detailed documentation, tutorials, and an active user and developer community into our comparison.
-
 % Solution: Platform vs. Coding Framework
 Furthermore, we distinguish between two different \textit{types of solutions}. It can either be a programming framework, which comes with no or few surrounding features, or an extensive platform solution.
 
@@ -88,7 +87,7 @@ Furthermore, we distinguish between two different \textit{types of solutions}. I
 
 
 
-\subsection{Comparison of PySyft Integration \& JIP Federated}
+\subsection{Comparison of the PySyft Integration \& JIP Federated}
 \label{subsec:ResultsRuntime}
 
 Based on the two classification experiments, we compare the JIP's PySyft integration and JIP Federated with regard to training duration. For a fair comparison, it must be ensured that both implementations result in similar training behavior and final performance.
@@ -101,7 +100,7 @@ Based on the two classification experiments, we compare the JIP's PySyft integra
 \label{fig:RuntimeExp}
 \end{figure}
 
-\Cref{fig:RuntimeExp} illustrates the learning curves using the JIP's PySyft integration and JIP Federated when training on both datasets, MNIST and the pneumonia images. It shows the convergence when applying a \textit{sequential} compute plan. The depicted loss values represent the average values over the batch losses of one local epoch each.
+\Cref{fig:RuntimeExp} illustrates the learning curves using the JIP's PySyft integration and JIP Federated when training on both datasets, MNIST and the pneumonia images. It shows the convergence when applying a \textit{sequential compute plan}. The depicted loss values represent the average values over the batch losses of one local epoch each.
 
 \begin{table}[htbp]
   \centering
@@ -125,6 +124,9 @@ Based on the two classification experiments, we compare the JIP's PySyft integra
 The performance of the final model checkpoints is compared using the accuracy on the held-out test data. 
 For the experiments on the slightly unbalanced pneumonia dataset, the AUROC is considered additionally. The achieved scores are listed in \Cref{tab:Performance}.
 
+% Run time
+\Cref{tab:RuntimeExp} lists the runtime differences between starting the first federated round and saving the final model of the conducted experiment.
+
 %\begin{table}[h!]
 \begin{table}[htbp]
   \centering
@@ -137,9 +139,6 @@ For the experiments on the slightly unbalanced pneumonia dataset, the AUROC is c
  \caption[Runtime of conducted experiments on MNIST and pneunomia data]{Runtime of conducted experiments on MNIST and pneunomia data (hh:mm:ss; one run)}
  \label{tab:RuntimeExp}
 \end{table}
-
-% Run time
-\Cref{tab:RuntimeExp} lists the runtime differences between starting the first federated round and saving the final model of the conducted experiment.
 
 
 
@@ -161,6 +160,6 @@ As upper baseline, the curves of the model training on the centralized data are 
 \begin{figure}[t!]
     %\centerline{\includegraphics[width=1.0\textwidth]{1_Figures/BraTSexperiments.pdf}}
     \centerline{\includegraphics[width=1.0\textwidth]{1_Figures/BraTSexperiment_all.pdf}}
-    \caption[Training loss and dice scores of the conducted BraTS experiment]{Training loss and testing performance of models trained on centralized data (blue) and in a federated scenario across three participating clinics (red). Curves are displayed for the three segmentation masks tumor core (TC), whole tumor (WT), enhancing tumor (ET) and their mean scores.}
+    \caption[Training loss and dice scores of the segmentation experiment]{Training loss and testing performance of models trained on centralized data (blue) and in a federated scenario across three participating clinics (red). Curves are displayed for the three segmentation masks tumor core (TC), whole tumor (WT), enhancing tumor (ET) and their mean scores.}
     \label{fig:BraTSplots}
 \end{figure}

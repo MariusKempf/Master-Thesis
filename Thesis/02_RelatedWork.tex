@@ -30,8 +30,8 @@ Although FL provides a basic notion of privacy by keeping the data distributed, 
 % Intro
 In order to realize FL, technical solutions are required. One can either use a customized approach for each individual scenario or an existing FL solution. Such FL solutions are presented in the following. %old: It can be a customized approach for each individual scenario or an existing FL solution is used. Such FL solutions are presented in the following.
 
-% NVIDIA Clara Federated
-\textbf{NVIDIA Clara Train SDK}
+% NVIDIA Clara Train
+\textbf{NVIDIA Clara Train}
 extends the NVIDIA Clara application framework optimized for the healthcare domain. It comes with useful features for medical images and enables developers to train models across institutions. In addition, it has already found some application in academia, as pointed out in the literature review in \Cref{subsec:LitRev} (see page \pageref{subsec:LitRev}). In contrast to other solutions, the source code is not publicly available.
 
 % FATE
@@ -88,24 +88,24 @@ Articles were classified as \textit{synthetic} if a FL solution
     \hline \\[-2.5ex] %[-1.5ex]
     \cite{Xu2020ADiagnosis}                             & real-world & custom solution          & 4             & FedAvg                    & 3D-Densenet       & Classification \\
     \cite{Balachandar2020AccountingImaging}             & simulated  & -                        & 4             & Sequential                & GoogleLeNet       & Classification \\
-    \cite{Wang2020AutomatedLearning}                    & real-world & NVIDIA Clara Federated   & 2             & FedAvg                    & C2FNAS            & Segmentation \\
+    \cite{Wang2020AutomatedLearning}                    & real-world & NVIDIA Clara Train   & 2             & FedAvg                    & C2FNAS            & Segmentation \\
     \cite{Remedios2020DistributedSegmentation}          & real-world & custom solution          & 2             & Sequential                & U-Net             & Segmentation  \\
     \cite{Remedios2019DistributedInjury}                & real-world & custom solution          & 2             & Sequential                & CNN (Incept.)     & Segmentation  \\
     \cite{Chang2018DistributedImaging}                  & simulated  & -                        & 4             & Sequential \& Ensembling  & ResNet34          & Classification \\
     \cite{Kaissis2021End-to-endImaging}                 & synthetic  & PriMIA (based on PySyft) & 3             & FedAvg                    & ResNet18          & Classification  \\
     \cite{Dou2021FederatedStudy}                        & synthetic  & custom solution          & 3             & FedAvg                    & CNN               & Segmentation \\
-    \cite{Roth2020FederatedImplementation}              & real-world & NVIDIA Clara Federated   & 7             & FedAvg                    & DenseNet-121      & Classification \\
+    \cite{Roth2020FederatedImplementation}              & real-world & NVIDIA Clara Train   & 7             & FedAvg                    & DenseNet-121      & Classification \\
     \cite{Feki2021FederatedImages}                      & simulated  & -                        & 4             & FedAvg                    & VGG16 \& ResNet50 & Classification \\    
-    \cite{Sarma2021FederatedSharing}                    & real-world & NVIDIA Clara Federated   & 3             & FedAvg                    & 3D AH Net         & Segmentation \\
+    \cite{Sarma2021FederatedSharing}                    & real-world & NVIDIA Clara Train   & 3             & FedAvg                    & 3D AH Net         & Segmentation \\
     \cite{Sheller2020FederatedData}                     & simulated  & -                        & 10            & FedAvg \& Sequential      & U-Net             & Segmentation \\
     \cite{Baheti2020FederatedNodules}                   & simulated  & -                        & 3             & FedAvg                    & V-Net             & Classification \\    
-    \cite{Yang2021FederatedJapan}                       & synthetic  & NVIDIA Clara Federated   & 3             & FedAvg                    & 3D U-Net          & Segmentation \\  
+    \cite{Yang2021FederatedJapan}                       & synthetic  & NVIDIA Clara Train   & 3             & FedAvg                    & 3D U-Net          & Segmentation \\  
     \cite{Sheller2019Multi-institutionalSegmentation}   & simulated  & -                        & 4, 6, 8, 32   & FedAvg                    & U-Net             & Segmentation \\
-    \cite{Li2019Privacy-preservingSegmentation}         & synthetic  & NVIDIA Clara Federated   & 13            & FedAvg                    & CNN               & Segmentation \\
+    \cite{Li2019Privacy-preservingSegmentation}         & synthetic  & NVIDIA Clara Train   & 13            & FedAvg                    & CNN               & Segmentation \\
     \cite{Andreux2020SiloedDatasets}                    & simulated  & -                        & 2, 5          & FedAvg                    & CNN               & Segmentation \\
     \cite{Yan2020Variation-AwareData}                   & simulated  & -                        & 2, 4, 8       & FedAvg                    & CNN               & Classification \\
     \cite{Lee2021FederatedEnvironment}                  & real-world & PySyft                   & 6             & FedAvg                    & multiple          & Classification \\
-    \cite{Flores2021FederatedPatients}\rlap{*}          & real-world & NVIDIA Clara Federated   & 20            & FedAvg                    & ResNet34          & Classification \\
+    \cite{Flores2021FederatedPatients}\rlap{*}          & real-world & NVIDIA Clara Train   & 20            & FedAvg                    & ResNet34          & Classification \\
   \end{tabular}
   \end{adjustbox}
   \caption[Identified articles applying FL using medical image data]{List of identified articles applying FL using medical images in a real-world, synthetic, or simulated setting (*Preprint)}
@@ -120,7 +120,7 @@ imitates a distributed system technically, by using multiple workers or computat
 % categories: real-world, synthetic, simulated
 \Cref{tab:LitSearch} displays the identified articles categorized as either \textit{real-world}, \textit{synthetic}, or \textit{simulated}. The results contain eight articles that used \textit{real-world} settings, while four are classified to be \textit{synthetic} and the remaining eight articles as \textit{simulated}.
 % FL Solution
-Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Federated \citep{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}. Note that PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data.   Four solutions do not use a specific framework, but customized solutions for the given setting \citep{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
+Two FL solutions can be identified: The FL solutions used by six articles, and thus by most, is the proprietary solution NVIDIA Clara Train \citep{Wang2020AutomatedLearning, Roth2020FederatedImplementation, Sarma2021FederatedSharing, Yang2021FederatedJapan, Li2019Privacy-preservingSegmentation, Flores2021FederatedPatients}. The open-source solution PySyft is used in two articles \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}. Note that PriMIA\footnote{\url{https://github.com/gkaissis/PriMIA}} extends PySyft for medical image data.   Four solutions do not use a specific framework, but customized solutions for the given setting \citep{Xu2020ADiagnosis, Remedios2020DistributedSegmentation, Remedios2019DistributedInjury, Dou2021FederatedStudy}.
 
 
 
@@ -134,7 +134,7 @@ Our developed solution for FL in medical environments is based on the Joint Imag
 The JIP provides a distributed infrastructure for image analysis and ML across the sites of the strategic initiative German Cancer Consortium\footnote{\url{https://dktk.dkfz.de/en}} (DKTK). The platform was developed and is maintained by the German Cancer Research Center. In addition to the DKTK sites, the JIP is also up and running in the majority of university clinics across Germany. The standardized infrastructure offers great potential for federated collaboration. It builds the foundation for our FL solutions presented in \Cref{sec:Methods} (see page \pageref{sec:Methods}).
 
 % Technology
-The technological backbone consists of five components that build the general architecture: JIP SYSTEM, JIP BASE, JIP STORE, JIP META, and JIP FLOW. All components are based on open-source technologies, which makes the JIP a publicly available open-source project itself\footnote{\url{https://github.com/kaapana/kaapana}}. The system was designed in such a way that it is easy to run in a protected hospital IT infrastructure. The platform is operated from a graphical user interface (GUI) in the browser and protected by a single sign-on. \Cref{fig:JIP} provides an overview of the used technology stack of the JIP.
+The technological backbone consists of five components that build the general architecture: JIP SYSTEM, JIP BASE, JIP STORE, JIP META, and JIP FLOW. All components are based on open-source technologies, which makes the JIP a publicly available open-source project itself\footnote{\url{https://github.com/kaapana/kaapana}}. The system was designed in such a way that it is easy to run in a protected hospital IT infrastructure. The platform is operated from a graphical user interface (GUI) in the browser and protected by a single sign-on. \Cref{fig:JIP} provides an overview of the architecture and used technology stack of the JIP.
 
 % Without Helm
 %The key components for implementing FL are MinIO\footnote{\url{https://min.io/}} and Apache Airflow\footnote{\url{https://airflow.apache.org/}} in combination with Kubernetes\footnote{\url{https://kubernetes.io/}}.
