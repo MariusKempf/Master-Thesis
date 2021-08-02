@@ -1,12 +1,12 @@
 \section{Results}
 \label{sec:Results}
 
-\subsection{Requirements \& FL Solutions Comparison}
+\subsection{Requirements \& Comparison of FL Solutions}
 \label{subsec:ResultsRequirements}
 
 % Reference to the table
-\Cref{tab:ToolComparison} summarizes the results of our requirement analysis and the comparison of the FL solutions considered in this work. The identified requirements are described in more detail below. Please note that entries marked with a hyphen could not be determined with full confidence by the author team\footnote{Not all the available resources are detailed enough to allow a reliable classification.}.
-The two entries marked by additional brackets are explained in \Cref{subsec:DiscussionRequirements} (see \pageref{subsec:DiscussionRequirements}).
+\Cref{tab:ToolComparison} summarizes the results of our requirement analysis and the comparison of the FL solutions considered in this work. The identified requirements are described in more detail in the following. Please note that entries marked with a hyphen could not be determined with full confidence by the author team\footnote{Not all the available resources are detailed enough to allow a reliable classification.}.
+The two entries marked by additional brackets are explained in \Cref{subsec:DiscussionRequirements} (see page \pageref{subsec:DiscussionRequirements}).
 
 
 \begin{sidewaystable}[htbp]
@@ -22,7 +22,7 @@ The two entries marked by additional brackets are explained in \Cref{subsec:Disc
     
     %multi-rows
     \arrayrulecolor{lightgray} \hline \\ [-1.5ex]
-    \multirow{2}{*}{Type of Solution}   & Platform Solution                     &   &   &   &   &   & \cmark & \cmark \\
+    \multirow{2}{*}{Type of solution}   & Platform Solution                     &   &   &   &   &   & \cmark & \cmark \\
                                         & Programming Framework                 & \cmark & \cmark & \cmark & \cmark & \cmark &   &   \\
     \hline \\[-1.5ex]
     \multirow{2}{*}{GPU support}        & Single GPU                            & \cmark & \cmark & -      & \cmark & \xmark & \cmark & \cmark \\
@@ -40,7 +40,7 @@ The two entries marked by additional brackets are explained in \Cref{subsec:Disc
                                         & TensorFlow                            & \cmark & \xmark & \cmark & \xmark & \cmark & \cmark & \cmark \\
                                         & PaddlePaddle                          & \xmark & \xmark & \xmark & \cmark & \xmark & -      & \cmark \\
     \hline \\[-1.5ex]
-    \multirow{2}{*}{Computing plans}    & Aggregation                           & \cmark & \cmark & \cmark & \cmark & \cmark & \cmark & \cmark \\
+    \multirow{2}{*}{Compute plans}    & Aggregation                           & \cmark & \cmark & \cmark & \cmark & \cmark & \cmark & \cmark \\
                                         & Sequential                            & -      & -      & \cmark & \xmark & \cmark & \cmark & \cmark \\
     %                                   & Ensembling                            & -      & \xmark & -      & -      & \cmark & \cmark & \cmark \\
     \hline \\[-1.5ex]
@@ -48,7 +48,7 @@ The two entries marked by additional brackets are explained in \Cref{subsec:Disc
                                         & Community                             & \cmark & \cmark & \cmark & \xmark & \cmark & \cmark & \cmark \\
   \end{tabular}
   \end{adjustbox}
-  \caption[Comparison of different FL solutions based on derived requirements for FL with medical image data]{Comparison of different FL solutions based on derived requirements for FL with medical image data. Note that entries marked with a hyphen could not be determined with full confidence. \cmark \space indicates that a requirement is fulfilled, \xmark \space indicates that it is not.}
+  \caption[Comparison of different FL solutions based on derived requirements for real-world FL with medical image data]{Comparison of different FL solutions based on derived requirements for real-world FL with medical image data. Note that entries marked with a hyphen could not be determined with full confidence. \cmark \space indicates that a requirement is fulfilled, \xmark \space indicates that it is not.}
   \label{tab:ToolComparison}
 \end{sidewaystable}
 
@@ -56,25 +56,25 @@ The two entries marked by additional brackets are explained in \Cref{subsec:Disc
 
 % ### Federated Learning Requirements ###
 From an FL perspective, the following requirements are derived.
-% multiple computing plans possible
-While applying model aggregation is the most common computing plan, others such as \textit{Sequential} training should be realizable in the solution \cite{Li2019Privacy-preservingSegmentation, Chang2018DistributedImaging}.
-We therefore consider the ability to implement at least these two computing plans as a proxy for the flexibility of a solution, and include it as a requirement.
+% multiple compute plans possible
+While applying \textit{model aggregation} is the most common compute plan, others such as \textit{sequential training} should be realizable in the solution \citep{Li2019Privacy-preservingSegmentation, Chang2018DistributedImaging}.
+We therefore consider the ability to implement at least these two compute plans as a proxy for the flexibility of a solution, and include it as a requirement.
 
 % privacy mechanisms
 To maintain the data privacy and security of communication and thus the motivation behind FL, the solutions should provide \textit{privacy mechanisms} to address potential attacks and information leakage. While there might be further ones, we include the following mechanisms retrieved from \cite{Kaissis2020SecureImaging} in our comparison:
-Differential Privacy \citep{Dwork2014ThePrivacy}, Homomorphic Encryption \citep{Acar2018AImplementation}, and Secure Multi-Party Computation (\citep{Zhao2019SecureApplications}).
+Differential Privacy \citep{Dwork2014ThePrivacy}, Homomorphic Encryption \citep{Acar2018AImplementation}, and Secure Multi-Party Computation \citep{Zhao2019SecureApplications}.
 % "Secure Aggregation is a class of Secure Multi-Party Computation algorithms"
 
 % ### Technical Requirements ###
 Further, there are technical requirements that are practically important for FL solutions in the context of medical imaging.
 % GPU support
-Although it is possible to run computationally expensive experiments on the CPU, \textit{GPU support} is essential. This is particularly the case when dealing with image data, and even more when object segmentation is the given task \cite{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.
+Although it is possible to run computationally expensive experiments on the CPU, \textit{GPU support} is essential. This is particularly the case when dealing with image data, and even more when object segmentation is the given task \citep{Kaissis2021End-to-endImaging, Lee2021FederatedEnvironment}.
 % DICOM format - medical imaging format & image data sets (multi-model dataset with arbitrary modality and dimension)
 Another important requirement in a clinical setting is the  compatibility with medical \textit{image data formats}, such as \textit{Digital Imaging and Communication in Medicine} (DICOM) \citep{Kaissis2021End-to-endImaging}.
 % PACS connectivity
 In addition to the support of DICOM as data format, it is essential for the solutions' application in clinics that they  include an adapter to the \textit{Picture Archiving and Communication System} (PACS). PACS is the system for managing and archiving medical images and is connected to the clinic's imaging hardware.
 % Open-source - proprietary - open-source / non proprietary solutions preferred
-The healthcare environment is highly sensitive, as well as individual for each site, so solutions are required that are as flexible and adaptable as possible. In addition, the lock-in effect needs to be prevented. Therefore, it is relevant whether the solution is open-source or proprietary from one provider.
+Because of the healthcare environment being highly sensitive, as well as individual for each site, solutions are required that are as flexible and adaptable as possible. In addition, the lock-in effect needs to be prevented. Therefore, it is relevant whether the solution is \textit{open-source} or proprietary from one provider.
 % Offline installation
 This is accompanied by an interest in the possibility of \textit{offline installation}, meaning that the solution is installable and runnable in an environment disconnected from the internet.
 % Information
@@ -88,7 +88,7 @@ Furthermore, we distinguish between two different \textit{types of solutions}. I
 
 
 
-\subsection{PySyft Integration \& JIP Federated Comparison}
+\subsection{Comparison of PySyft Integration \& JIP Federated}
 \label{subsec:ResultsRuntime}
 
 Based on the two classification experiments, we compare the JIP's PySyft integration and JIP Federated with regard to training duration. For a fair comparison, it must be ensured that both implementations result in similar training behavior and final performance.
@@ -101,7 +101,7 @@ Based on the two classification experiments, we compare the JIP's PySyft integra
 \label{fig:RuntimeExp}
 \end{figure}
 
-\Cref{fig:RuntimeExp} illustrates the learning curves using the JIP's PySyft integration and JIP Federated when training on both datasets, MNIST and the pneumonia images. It shows the convergence when applying a sequential computing plan. The depicted loss values represent the average values over the batch losses of one local epoch each.
+\Cref{fig:RuntimeExp} illustrates the learning curves using the JIP's PySyft integration and JIP Federated when training on both datasets, MNIST and the pneumonia images. It shows the convergence when applying a \textit{sequential} compute plan. The depicted loss values represent the average values over the batch losses of one local epoch each.
 
 \begin{table}[htbp]
   \centering
@@ -113,7 +113,7 @@ Based on the two classification experiments, we compare the JIP's PySyft integra
   PySyft on pneumonia           & 91.35 \% & 0.887 \\
   JIP Federated on pneumonia    & 92.79 \% & 0.906 \\
  \end{tabular}
- \caption[Model performance on held out test data]{Model performance on held out test data (one run)}
+ \caption[Performance scores on MNIST and pneunomia test data]{Performance scores on MNIST and pneumonia test data (one run)}
  \label{tab:Performance}
 \end{table}
 % PySyft MNIST:     99.02% 
@@ -150,14 +150,12 @@ For the experiments on the slightly unbalanced pneumonia dataset, the AUROC is c
 % Intro sentence
 The segmentation experiment on the BraTS data serves to demonstrate that JIP Federated is capable of performing complex deep learning tasks.
 % mean dice score and figure
-\Cref{fig:BraTSplots} shows the training loss together with the mean dice score and the three available segmentation masks on the test data for each federated round.
-
-The mean dice score is build as the average of the three different label masks (ET, TC, WT) described in \Cref{subsec:MethodsExperiments} (see \pageref{subsec:MethodsExperiments}. 
-Each data point represents the mean value over one epoch, respectively, one iteration on the corresponding data.
+\Cref{fig:BraTSplots} shows the training loss together with the dice scores on the three available segmentation masks (ET, TC, WT) described in \Cref{subsec:MethodsExperiments} (see page \pageref{subsec:MethodsExperiments}). In addition, the mean dice score built from the scores on the three segmentation masks is displayed.
+The dice scores show the performance on the test data for each federated round, respectively epoch. Each data point represents the mean value over one iteration on the corresponding data.
 
 % illustration
 In order to imitate a realistic FL scenario, the test performance was computed locally on each participant using the test data available there. This results in three curves, depicted in gray, showing the local behavior. The local training loss and testing performance scores of the participating clinics were aggregated to averaged values depicted in red.
-As upper baseline, the curves of the model training on the centralized data are also displayed.
+As upper baseline, the curves of the model training on the centralized data are displayed in blue.
 
 %\begin{figure}[htbp]
 \begin{figure}[t!]

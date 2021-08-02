@@ -1,10 +1,10 @@
 \section{Discussion}
 \label{sec:Discussion}
 
-\subsection{Requirements \& FL Solutions Comparison}
+\subsection{Requirements \& Comparison of FL Solutions}
 \label{subsec:DiscussionRequirements}
 
-When examining the previously presented comparison (see \Cref{subsec:ResultsRequirements} on \pageref{subsec:ResultsRequirements}) of the various FL Solutions, the following can be noted.
+When examining the previously presented comparison (see \Cref{subsec:ResultsRequirements} on page \pageref{subsec:ResultsRequirements}) of the various FL Solutions, the following can be noted.
 % GPU 
 Apart from PySyft all FL solutions support GPU. This also applies to the current version of the PriMIA extension, which has been adapted for the field of medical image data.
 % PACS & DICOM
@@ -15,7 +15,7 @@ Except for PySyft and PaddleFL all solutions come with extensive information. Wh
 
 % privacy things - Lack of privacy mechanism on JIP federated
 When comparing the privacy mechanisms, a weakness of JIP Federated becomes apparent. All other solutions support at least one of the considered mechanisms, whereas JIP Federated has not implemented any mechanism yet.
-Note that TFF does not natively come with Differential Privacy. However, it can be seamlessly added by using \textit{TensorFlow Privacy}\footnote{\url{https://github.com/tensorflow/privacy}}, which is completely interoperable with TFF.
+Note that TFF does not natively come with Differential Privacy. However, it can be seamlessly added by using TensorFlow Privacy\footnote{\url{https://github.com/tensorflow/privacy}}, which is completely interoperable with TFF.
 While the implementation of such mechanisms is beyond the scope of this work, it is foreseeable that this will be one of the next steps in further development. % hier angebracht?
 Until then, this is an obvious disadvantage of JIP Federated.
 
@@ -24,7 +24,7 @@ NVIDIA Clara Federated and JIP Federated are both extensive platform solutions w
 % Distinction between NVIDIA Clara and JIP Federated
 The differences between the two solutions are the following. While the codebase of NIVDIA Clara Federated is not publicly available, JIP Federated is fully open-source. This allows developers to extend the solution according to their needs, to understand the functionalities, and therefore trust the solution.
 From our perspective, all this can be seen as advantageous.
-Further, NVIDIA provides the privacy mechanisms DP and HE, which is a major advantage compared to JIP Federated, which does not support such mechanisms yet.
+Further, NVIDIA Clara Federated provides the privacy mechanisms Differential Privacy and Homomorphic Encryption, which is a major advantage compared to JIP Federated, which does not support such mechanisms yet.
 
 % Limitation
 Please note that this categorization was done to the best of our knowledge and based on the available information. As mentioned before, it was not always easy to identify the relevant details in the given information.
@@ -33,7 +33,7 @@ Please note that this categorization was done to the best of our knowledge and b
 
 
 
-\subsection{PySyft Integration \& JIP Federated Implementation}
+\subsection{Implementation of PySyft Integration \& JIP Federated}
 \label{subsec:DiscussionImplementation}
 % ### PySyft Integration ###
 % (Docker) container integration
@@ -46,7 +46,7 @@ The integration of PySyft clearly shows the advantages of the JIP.
 It highlights the flexibility and expandability of the platform, not only for PySyft but also for other potential solutions and frameworks. We showed that due to the open codebase, it is possible to combine other FL solutions with the JIP. In particular, solutions that are provided as containers can be deployed seamlessly in the JIP's Kubernetes cluster.
 
 % ### JIP Federated ####
-For JIP Federated, the key component to orchestrate the workflows within and across the central instance and the participants is Apache Airflow.
+For JIP Federated, the key component to orchestrate the workflows within and across the central instance and the participants is Airflow.
 % re-using operators
 Because Airflow operators are the essential components for the workflow logic, they should be as generic and reusable as possible to minimize the development effort for a new experiment. We have managed to implement all operators, except the actual experiment operators, in such a way that they are completely transferable as they are. Therefore, a data scientist who wants to conduct his experiment in the JIP only needs to transfer his code into the two containers for model aggregation and model training on the participants. We see this as advantageous in terms of development effort.
 

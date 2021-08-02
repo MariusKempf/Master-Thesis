@@ -1,7 +1,7 @@
 \section{Methods}
 \label{sec:Methods}
 
-\subsection{Requirements \& FL Solutions Comparison}
+\subsection{Requirements \& Comparison of FL Solutions}
 \label{subsec:MethodsRequirements}
 
 % Deriving Requirements
@@ -11,7 +11,7 @@ Implementations of FL solutions in a real-world medical environment need to fulf
 In addition, we add further requirements assessed from the experience of three domain experts in the field of FL and DL on medical image data. These requirements are considered by the experts to be relevant for the successful implementation of FL in a medical environment.
 
 % Comparison
-Based on the identified requirements, we compare multiple FL solutions, including our own proposed solution based on the JIP. Besides NVIDIA Clara Federated and PySyft, which have already been used in scientific publications (see \Cref{subsec:LitRev} on page \pageref{subsec:LitRev}), we also include the other FL solutions introduced in the related work. These solutions were already examined in earlier scientific publications of \cite{Li2019AProtection} and \cite{He2020FedML:Learning}, have a significant number of GitHub stars, and have an active repository with current contributions. Custom implementations are not considered further for comparison due to their lack of scalability. In order to gather the relevant information, we have intensively studied the provided documentation as well as tutorials and examples, if provided.
+Based on the identified requirements, we compare multiple FL solutions, including our own proposed solution based on the JIP. Besides NVIDIA Clara Federated and PySyft, which have already been used in scientific publications (see \Cref{subsec:LitRev} on page \pageref{subsec:LitRev}), we also include the other FL solutions introduced in the related work. These solutions were already examined in earlier scientific publications \citep{Li2019AProtection, He2020FedML:Learning}, have a significant number of GitHub stars, and have an active repository with current contributions. Custom implementations are not considered further for comparison due to their lack of scalability. In order to gather the relevant information, we have intensively studied the provided documentation as well as tutorials and examples, if provided.
 
 
 
@@ -25,20 +25,20 @@ We assume that the data scientist who wants to conduct a federated experiment op
 
 % PySyft Components
 The integration of PySyft is limited to its release version 0.2.9 because more recent versions do not yet support the local deployment of the computing instance.
-This means that they can only be deployed via a public cloud service, which excludes the more recent PySyft versions from the usage in a secured medical clinic.
+This means that they can only be deployed via a public cloud service, which excludes the more recent PySyft versions from the usage in a secured medical environment.
 PySyft comes with three components.
 \textit{PySyft-Notebook} is a jupyter-notebook environment with all required packages installed. It runs on the central instance and serves the data scientist as the development environment for his experiment.
 \textit{PySyft-Grid} serves as the network to manage the communication. It can be accessed by the data scientist and searched for available data.
-\textit{PySyft-Node} is the component that hosts the data, provides references to it in the \textit{PySyft-Grid} and performs the training computations. A node can be registered in a \textit{PySyft-Grid}, which then enables the data scientist to search and work with the provided references to the data hosted by the node.
+\textit{PySyft-Node} is the component that hosts the data, provides references to it in the \textit{PySyft-Grid}, and performs the training computations. A node can be registered in a \textit{PySyft-Grid}, which then enables the data scientist to search and work with the provided references to the data hosted by the node. The hosted data can be marked with identification tags.
 
-The data can be marked with identification tags. All three components are provided by Openmined as ready-to-use container images and are easy to be integrated into the JIP without major adjustments due to the underlying Kubernetes cluster.To open the communication between the different nodes specific ports were excluded from the single sign-on.
+All three components are provided by Openmined as ready-to-use container images and are easy to be integrated into the JIP without major adjustments due to the underlying Kubernetes cluster. To open the communication between the different nodes specific ports were excluded from the single sign-on.
 
 % Kombination von beidem
-For the experiments in this work, the \textit{PySyft-Node} was integrated into an Airflow DAG as an operator. Together with an operator to load the data into Airflow and another operator to provide the data, they form the DAG in the participating clinics. The data-providing operator performs the image transformations and then sends them all to the \textit{PySyft-Node}. After a given time, the operators stop, and the data is not provided in the \textit{PySyft-Grid} any further. The described process is illustrated as DAG in \Cref{fig:Dags} C.
+For the experiments in this work, the \textit{PySyft-Node} was integrated into an Airflow DAG as an operator. Together with an operator to load the data into Airflow and another operator to provide the data, they form the DAG in the participating clinics. The data-providing operator performs the image transformations and then sends them all to the \textit{PySyft-Node}. After a given time, the operators stop, and the data is not provided in the \textit{PySyft-Grid} any further. The described workflow is illustrated as DAG in \Cref{fig:Dags} C.
 
 % Training via Jupyter Notebook 
 \textit{PySyft-Grid} and \textit{PySyft-Notebook} are hosted on the central instance.
-From the notebook, it is then possible to search for the relevant data within \textit{PySyft-Grid} using the assigned identification tags. The received references to the data on the participating clinics can then be used as usual in PySyft to implement the training logic.
+From the notebook, it is then possible to search for the relevant data within \textit{PySyft-Grid} using the assigned identification tags. The received references to the data on the participating clinics can then be used as usual in PyTorch to implement the training logic.
 
 
 \subsection{JIP Federated}
@@ -47,24 +47,24 @@ From the notebook, it is then possible to search for the relevant data within \t
 % shortly repeat setting
 As with the JIP's PySyft integration, we assume a setting of multiple participating clinics and one central instance, all having their individual JIP installed. The data scientist implements and runs the experiment from the central instance.
 % Ref to figure
-The workflow on the central instance is illustrated in \Cref{fig:Dags} A, the training on the participants in \Cref{fig:Dags} B.
+The DAG on the central instance is illustrated in \Cref{fig:Dags} A, the DAG for local training on the participants in \Cref{fig:Dags} B.
 
 % Our JIP Federated implementation is 
-We implemented JIP Federated in such way that it is primarily based on the two JIP components Apache Airflow and the object store MinIO as well as their corresponding APIs. Also here, some ports and URLs were whitelisted to enable a communication between the nodes. Different from the PySyft integration, the federated training is scheduled by an Airflow DAG on the central instance instead of a jupyter-notebook. An API call to Airflow is used to start the scheduler DAG and thus the federated experiment. With the API call, relevant parameters such as the number of federated rounds, corresponding epochs per round, and learning rate are provided.
+We implemented JIP Federated in such way that it is primarily based on the two JIP components Apache Airflow and the object store MinIO as well as their corresponding APIs. Also here, some ports and URLs were whitelisted to enable a communication between the nodes. Different from the PySyft integration, the federated training is scheduled by a DAG on the central instance instead of a jupyter-notebook. An API call to Airflow is used to start the central DAG and thus the federated experiment. With the API call, relevant parameters such as the number of federated rounds, corresponding epochs per round, and learning rate are provided.
 
 %\begin{figure}[h!]
 \begin{figure}[htbp]
     \centerline{\includegraphics[width=1\textwidth]{1_Figures/dags.pdf}}
-    \caption[DAGs for JIP Federated and the JIP's PySyft integration]{DAGs for JIP Federated (A \& B) and the JIP's PySyft integration (C). (A) DAG on central instance, which schedules the federated experiment and its individual process steps. (B) DAG on a participating institutions, which loads the local data and the consensus model from the central instance to execute the model training. When training is completed, the updated model is saved back to the central instance.  (C) DAG on a participating instance loading and providing its locally available data to the PySyft-Node, which then executes the computations during training. Note that the central instance of the PySyft integration hosts its PySyft-Notebook without being integrated into a DAG.}
+    \caption[DAGs for JIP Federated and the JIP's PySyft integration]{DAGs for JIP Federated (A \& B) and the JIP's PySyft integration (C). (A) DAG on central instance, which schedules the federated experiment and its individual process steps. (B) DAG on the participating institutions, which loads the local data and the consensus model from the central instance to execute the model training. When training is completed, the updated model is saved back to the central instance.  (C) DAG on a participating instance loading and providing its locally available data to the PySyft-Node, which then hosts references to the data into the grid and executes the computations during training. Note that the central instance of the PySyft integration hosts its PySyft-Notebook and PySyft-Grid without being integrated into a DAG.}
 \label{fig:Dags}
 \end{figure}
 
 % ### scheduler dag ####
-The workflow on the central instance controls the processes of the experiment and can be described as follows (see \Cref{fig:Dags} A).
+The DAG on the central instance controls the processes of the experiment and can be described as follows (see \Cref{fig:Dags} A).
 First, depending on the current round, either a new model is initialized  or the model of the previous round is directly stored into the object store.
-In case it was the last round, the experiment is completed. Otherwise, it continues with the next operator.
+In case the last round has finished, the final model is saved, and the experiment is completed. Otherwise, it continues with the next operator.
 % API Calls & Waiting
-After saving the model, API calls are triggered on the participants' sites in order to start the corresponding training DAGs there. The relevant training information is also passed on to the participants. Subsequently, the workflow waits for the participants to send the models back to the central instance's object store. A regular check is made via the object store's its API to see whether all awaited models have already arrived.
+After saving the model, API calls are triggered on the participants' sites in order to start the corresponding training DAGs there. The relevant training information is also passed on to the participants via the API call. Subsequently, the workflow waits for the participants to send the models back to the central instance's object store. A regular check is made via the object store's API to see whether all awaited models have arrived.
 % aggregation
 When this is the case, the following operator performs the model aggregation and constructs the consensus model.
 % completion
@@ -85,7 +85,7 @@ Due to the modularity of the DAGs, the individual operators can be reused for ot
 
 % Intro & General
 In the following, the implementations of the JIP's PySyft integration and JIP Federated are described in detail.
-The implementations are publicly available on GitHub embedded in the Kaapana project---the JIP's PySyft integration can be found on the branch \textit{feature/openmined}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined}\\ commit hash: aab58dac046f22d1b67ee2b49d9f4c72f7b0b69d}, JIP Federated on the branch \textit{feature/federated-training}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training}\\ commit hash: 1da26c0dfbe53d3a092762bd8e8a9e2e564148ef}.
+The implementations are publicly available on GitHub embedded in the JIP project---the JIP's PySyft integration can be found on the branch \textit{feature/openmined}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined}\\ commit hash: aab58dac046f22d1b67ee2b49d9f4c72f7b0b69d}, JIP Federated on the branch \textit{feature/federated-training}\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training}\\ commit hash: 1da26c0dfbe53d3a092762bd8e8a9e2e564148ef}.
 
 % Minio Operator 
 A central operator is the \textit{LocalMinioOperator}\footnote{\url{https://github.com/kaapana/kaapana/blob/develop/workflows/airflow-components/plugins/kaapana/operators/LocalMinioOperator.py}}. It serves as an interface between the Airflow environment and the object-store MinIO. The operator can be used for applying the operations \textit{get}, \textit{remove}, and \textit{put} on the buckets and available files. Across both implementations and all experiments, it is used, for instance, to load data into the Airflow environment or to load and store models.
@@ -95,18 +95,18 @@ A central operator is the \textit{LocalMinioOperator}\footnote{\url{https://gith
 \subsubsection{PySyft Integration into the JIP}
 
 % central instance
-The three containerized PySyft components (PySyft-Notebook, PySyft-Grid, PySyft-Notebook) are embedded into the JIP via Helm charts\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/services/applications/openmined}}. This allows to install them via the JIP's GUI as a JIP extension. \textit{PySyft-Grid} and \textit{PySyft-Notebook} are installed as such extensions on the central instance.
+The three containerized PySyft components (PySyft-Notebook, PySyft-Grid, PySyft-Notebook) are embedded into the JIP as Helm charts\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/services/applications/openmined}}. This allows to install them as JIP extension via the JIP's GUI. \textit{PySyft-Grid} and \textit{PySyft-Notebook} are installed as such extensions on the central instance.
 % participants
 On the participants, the \textit{PySyft-Node} is integrated into a DAG\footnote{\url{https://github.com/kaapana/kaapana/blob/feature/openmined/workflows/airflow-components/dags/dag_openmined_provide_data.py}} which is depicted in \Cref{fig:DetailedDAG_PySyft}. In addition to an operator to load the data into the Airflow environment, the following three operators are implemented for this DAG.
 
 % run-node-operator
-The \textit{RunNodeOperator} is implemented as \textit{Application-Operator}. These operators can launch applications via the Helm API, similar to manually installing an extension. By running this operator, the \textit{PySyft-Node} is started as a temporary application in the JIP. This is done in parallel with the operator described next.
+\textit{RunNodeOperator} is implemented as \textit{Application-Operator}. These operators can launch applications via the Helm API, similar to manually installing an extension. By running this operator, the \textit{PySyft-Node} is started as a temporary application in the JIP. This is done in parallel with the operator described next.
 
 % provide-data-operator
-The \textit{ProvideDataOperator} starts a Docker container\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/processing-container/openmined/provide-data}}, which mounts the directory containing the previously loaded data. When the container is launched, it executes its process script. Meaning that data is loaded, transformed, tagged, and then sent to the \textit{PySyft-Node}. A parameter can be set for how long the data should be provided into the node.
+\textit{ProvideDataOperator} starts a Docker container\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/processing-container/openmined/provide-data}}, mounting the directory containing the previously loaded data. When the container is launched, it executes its process script. Meaning that data is loaded, transformed, tagged, and then sent to the \textit{PySyft-Node}. A parameter can be set for how long the data should be provided into the node.
 
 % shutdown
-When the previous operator is completed, the subsequent \textit{ShutdownNodeOperator} is launched to call the Helm API to uninstall \textit{PySyft-Node} chart.
+When the \textit{ProvideDataOperator} is completed, the subsequent \textit{ShutdownNodeOperator} is launched to call the Helm API to uninstall \textit{PySyft-Node} chart.
 From this point on, the node is unsubscribed from the \textit{PySyft-Grid} and its data is not hosted any further. As a last step, the used Airflow directories are emptied.
 
 \begin{figure}[htbp!]
@@ -116,7 +116,7 @@ From this point on, the node is unsubscribed from the \textit{PySyft-Grid} and i
 \end{figure}
 
 % Operators 
-The operators used for the JIP's PySyft integration are can be found in the repository\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/airflow-components/dags/openmined}}.
+The operators used for the JIP's PySyft integration are can be found in the corresponding repository\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/airflow-components/dags/openmined}}.
 Exemplary experiment-notebooks are made available together with the Docker image of the \textit{PySyft-Notebook} component\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/openmined/workflows/processing-container/openmined/provide-data}}.
 
 
@@ -125,31 +125,31 @@ Exemplary experiment-notebooks are made available together with the Docker image
 \subsubsection{JIP Federated}
 \label{subsubsec:JIPFederated}
 
-As described in \Cref{subsec:MethodsJIPFederated} (see \pageref{subsec:MethodsJIPFederated}, each experiment using JIP Federated is based on two DAGs\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/airflow-components/dags}}---one implemented on the central instance and the second on the participating institutions. \Cref{fig:DetailedDAG_KaapanaFed} provides a detailed illustration of the two DAGs.
+As described in \Cref{subsec:MethodsJIPFederated} (see page \pageref{subsec:MethodsJIPFederated}), each experiment using JIP Federated is based on two DAGs\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/airflow-components/dags}}---one implemented on the central instance and the second on the participating institutions. \Cref{fig:DetailedDAG_KaapanaFed} provides a detailed illustration of the two DAGs.
 In the following, the implemented operators are described in detail---the source-code is publicly available\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/airflow-components/dags/federated_training}}.
 The same applies to the corresponding processing containers\footnote{\url{https://github.com/kaapana/kaapana/tree/feature/federated-training/workflows/processing-container/federated-training}}.
 Note that depending on whether \textit{aggregation} or \textit{sequential training} was chosen as computing plan, the behavior of the operators slightly differ.
 
 \textit{EntrypointOperator} is the first operator being executed when the DAG starts. Given the parameter provided by the API call of the data scientist or the previous DAG-run, it determines the next step. 
-For the first federated round, the first model is initialized. In case the training is completed, the next step is to save the final model and finalize the workflow.
+For the first federated round, the model is initialized. In case the training is completed, the next step is to save the final model and finalize the workflow.
 Otherwise, the training continues and the model from the previous round is saved to MinIO.
-The routing is realized by the \textit{KaapanaBranchPythonBaseOperator} which branches the workflow depending on the information given the information received from the \textit{EntrypointOperator}.
+The routing is realized by the \textit{KaapanaBranchPythonBaseOperator} which branches the workflow depending on the information received from the \textit{EntrypointOperator}.
 
-\textit{ExperimentOperator} is used at two points in the DAG. First, it initializes the model in the first round. Further, it is used for aggregation of models received from the participants. When a \textit{sequential} computing plan is applied, the model is simply loaded and directly saved again to the target directory.
+\textit{ExperimentOperator} is used at two points in the DAG. First, it initializes the model in the first round. Further, it is used for aggregation of models received from the participants. When a \textit{sequential} computing plan is applied, the model is simply loaded and directly saved again into the target directory.
 To decide between the tasks to be executed, corresponding parameters are passed when starting the operator.
-While all other operators are generic, this operator is experiment-specific. The specific operators for each of the conducted experiments are also available in the repository and can be identified by their name (i.e. \verb|ExperimentsBraTSOperator.py|).
+While all other operators in this DAG are generic, the \textit{ExperimentOperator} is experiment-specific. The corresponding operators for each of the conducted experiments are also available in the repository and can be identified by their names (i.e. \verb|ExperimentsBraTSOperator.py|).
 
 \textit{TriggerRemoteWorkersOperator} triggers the DAGs on the participating institutes. For each participant, an API call is executed which contains the required information and parameters, such as current federated round, number of epochs to train locally, and learning rate to use. In addition, information about the central instance is provided so that an allocation can be done. Note that no model is sent by the central instance.
 In parallel, a \textit{LocalMinioOperator} empties the model cache in MinIO, because the new models of the participants are expected there.
 
-\textit{AwaitingModelsOperator} is used to keep the workflow waiting for the models to be sent back. It uses the API of MinIO to check every three seconds whether the models of the participants have already arrived in the model cache (which has been emptied before to guarantee that no models from earlier rounds are used). As soon as all newly updated models are available, the loop ends and the operator completed its task.
+\textit{AwaitingModelsOperator} is used to keep the workflow waiting for the models to be received back. It uses the API of MinIO to check every three seconds whether the models of the participants have already arrived in the model cache (which has been emptied before to guarantee that no models from earlier rounds are used). As soon as all newly updated models are available, the loop ends and the operator completed its task.
 
 \textit{TriggerMyselfOperator} is the final operator of the DAG.
-It serves for launching the next Dag-Run. For this, it transfers the required data, such as the current model
+It serves for launching the next DAG-run. For this, it transfers the required data, such as the current model
 
 \begin{sidewaysfigure}[htbp]
     \centerline{\includegraphics[width=1\textwidth]{1_Figures/DAG_KaapanaFed.pdf}}
-    \caption[Detailed illustration of DAGs for JIP Federated]{DAGs for JIP federated. (A) DAG on the central instance, scheduling the overall workflow. (B) Training DAG implemented on the participating instances.}
+    \caption[Detailed illustration of DAGs for JIP Federated]{DAGs for JIP Federated. (A) DAG on the central instance, scheduling the overall workflow. (B) DAG implemented on the participating instances to perform the model training on locally available data.}
 \label{fig:DetailedDAG_KaapanaFed}
 \end{sidewaysfigure}
 
@@ -215,12 +215,12 @@ In both cases, the models were trained for 500 epochs, respectively federated ro
 % GPU
 The model training computations were performed on graphical processing units (GPUs).
 % Dataset description
-The brain dataset from the \textit{Medical Segmentation Decathlon} was used. The dataset consists of a subset of the Brain Tumor Segmentation (BraTS) \cite{Menze2015TheBRATS} Challenge 2016 and 2017 data \citep{Antonelli2021TheDecathlon}. Besides unlabeled test samples, it contains 484 multi-modal MRI scans and their corresponding labels. 96 of the labeled samples were separated to serve as test data for measuring the model performance. For the experiment, three participating sites were established on individual server instances. Accordingly, the data was randomly sampled and divided into three non-overlapping subsets. Each instance was provided with 129 samples for training and 32 for testing. For centralized training, the identical data was merged into central datasets and then used for training and testing.
+The brain dataset from the \textit{Medical Segmentation Decathlon}\footnote{\url{http://medicaldecathlon.com/}} was used. The dataset consists of a subset of the Brain Tumor Segmentation (BraTS) \cite{Menze2015TheBRATS} Challenge 2016 and 2017 data \citep{Antonelli2021TheDecathlon}. Besides unlabeled test samples, it contains 484 multi-modal MRI scans and their corresponding labels. 96 of the labeled samples were separated to serve as test data for measuring the model performance. For the experiment, three participating sites were established on individual server instances. Accordingly, the data was randomly sampled and divided into three non-overlapping subsets. Each instance was provided with 129 samples for training and 32 for testing. For centralized training, the identical data was merged into central datasets and then used for training and testing.
 % bezeichnung der Daten <-- clear naming! 
 In the remainder of this work, this data will be referred to as BraTS dataset.
 
 % optimizer & reference to appendix for details
-To train the model with this data, we used the Adam optimizer \citep{Kingma2014Adam:Optimization} with a 
+To train the model with this data, we used the Adam optimizer \citep{Kingma2015} with a 
 learning rate of $10^{-4}$
 and weight decay of $10^{-5}$.
 % Applied transformations
