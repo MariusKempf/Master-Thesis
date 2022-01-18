@@ -4,40 +4,8 @@ Master’s Thesis elaborated in cooperation with the [German Cancer Research Cen
 
 ### Abstract
 
-Data science offers many opportunities to gain new
-and valuable insights from medical data to achieve enhanced
-patient care. The potential becomes even greater the more data
-can be analyzed and used to train machine learning models.
-In particular, for deep learning, numerous training samples are
-needed to achieve adequate performance and generalizability
-for the sensitive healthcare domain. However, medical data is
-highly sensitive and must therefore be treated very carefully
-for good reasons. Federated learning is a machine learning
-paradigm that allows to leverage geographically distributed data
-while maintaining privacy by sharing models instead of raw
-data during the training process. The potential and performance
-of models trained federally have already been demonstrated,
-but real-world applications in the field of medical imaging are
-still rare. To bridge the gap between simulations and actual
-experiments across medical institutions, technical solutions are
-required. Recently, a multitude of promising projects aiming to
-provide solutions for federated learning have emerged. However,
-they must fulfill specific requirements for a meaningful usage
-in a medical environment. We, therefore, ask the question, what
-is needed to bring federated learning solutions into clinics and
-how a solution could look like. We compare existing solutions
-and demonstrate a combination of PySyft and the Joint Imaging
-Platform. Further, a solution purely based on the Joint Imaging
-Platform, which is already installed at several German clinics, is
-introduced: JIP Federated. Its capability is demonstrated with
-a federated segmentation experiment on distributed brain MRI
-scans. Our results show the following. The gap of a comprehensive
-solution fulfilling all requirements could be narrowed to some
-extent, but not yet closed—Additional effort is required. Further,
-JIP Federated is a flexible solution that allows data scientists to
-freely implement their own algorithms, and is available as an
-open-source project. Together with the Joint Imaging Platform’s
-features developed for medical imaging, JIP Federated offers a
-promising solution to apply federated learning across medical
-institutions, thus, allowing distributed analyses while preserving
-privacy.
+Data science offers many opportunities to gain new and valuable insights from medical data to achieve enhanced patient care. The potential becomes even greater the more data can be analyzed and used to train machine learning models. In particular, for deep learning, numerous training samples are needed to achieve adequate performance and generalizability for the sensitive healthcare domain. However, medical data is highly sensitive and must therefore be treated very carefully for good reasons. Federated learning is a machine learning paradigm that allows to leverage geographically distributed data while maintaining privacy by sharing models instead of raw data during the training process. The potential and performance of models trained federally have already been demonstrated, but real-world applications in the field of medical imaging are still rare. To bridge the gap between simulations and actual experiments across medical institutions, technical solutions are required. Recently, a multitude of promising projects aiming to provide solutions for federated learning have emerged. However, they must fulfill specific requirements for a meaningful usage in a medical environment. We, therefore, ask the question, what is needed to bring federated learning solutions into clinics and how a solution could look like. We compare existing solutions and demonstrate a combination of PySyft and the Joint Imaging Platform. Further, a solution purely based on the Joint Imaging Platform, which is already installed at several German clinics, is introduced: JIP Federated. Its capability is demonstrated with a federated segmentation experiment on distributed brain MRI scans. Our results show the following. The gap of a comprehensive solution fulfilling all requirements could be narrowed to some extent, but not yet closed—Additional effort is required. Further, JIP Federated is a flexible solution that allows data scientists to freely implement their own algorithms, and is available as an open-source project. Together with the Joint Imaging Platform’sfeatures developed for medical imaging, JIP Federated offers a promising solution to apply federated learning across medical institutions, thus, allowing distributed analyses while preserving privacy.
+
+### Kaapana
+
+"Kaapana (from the hawaiian word kaʻāpana, meaning “distributor” or “part”) is an open source toolkit for state of the art platform provisioning in the field of medical data analysis. The applications comprise AI-based workflows and federated learning scenarios with a focus on radiological and radiotherapeutic imaging." Checkout the [GitHub repo](https://github.com/kaapana/kaapana) and corresponding [website](https://www.kaapana.ai/).
